@@ -1,13 +1,26 @@
 import express from "express";
 import dotenv from "dotenv"
-import { ConnectDB } from "./config/db.js";
+import { ConnectDB } from "./src/config/db.js";
 import mongoose from "mongoose";
+import userRoutes from "./src/routes/auth.routes.js"
+import cors from "cors"
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-const app = express();
-ConnectDB();
 
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+try {
+  ConnectDB();
+} catch (error) {
+  console.log(error);
+}
+
+app.use(cookieParser())
+
+app.use("/api/auth" ,userRoutes);
 app.get("/health", (req, res) => {
   const healthcheck = {
     status: "OK",
