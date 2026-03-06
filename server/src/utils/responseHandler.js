@@ -1,14 +1,29 @@
-export const successResponse = (res, data = {}, message = "Success", status = 200) => {
+export const successResponse = (
+  res,
+  {
+    status = 200,
+    message = "Success",
+    data = null,
+    user = null,
+    token = null
+  } = {}
+) => {
   return res.status(status).json({
     success: true,
     message,
-    data
+    ...(data && { data }),
+    ...(user && { user }),
+    ...(token && { token })
   });
 };
 
-export const errorResponse = (res, message = "Something went wrong", status = 500) => {
+export const errorResponse = (
+  res,
+  message = "Something went wrong",
+  status = 500,
+) => {
   return res.status(status).json({
     success: false,
-    message
+    message,
   });
 };
