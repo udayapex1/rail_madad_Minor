@@ -5,34 +5,42 @@ import mongoose from "mongoose";
 import userRoutes from "./src/routes/auth.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import os from "os";
 
 dotenv.config();
 
 const app = express();
 
+// --- HELPER: Human-readable Uptime ---
+const getReadableUptime = () => {
+  const seconds = process.uptime();
+  const d = Math.floor(seconds / (3600 * 24));
+  const h = Math.floor((seconds % (3600 * 24)) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return `${d}d ${h}h ${m}m ${s}s`;
+};
+
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "http://localhost:3000",
-  "http://localhost:8000",
+  "http://localhost:5173", "http://localhost:5174",
+  "http://localhost:3000", "http://localhost:8000",
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+}));
 
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  }),
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 try {
   ConnectDB();
 } catch (error) {
@@ -40,23 +48,60 @@ try {
 }
 
 app.use(cookieParser());
-
 app.use("/api/auth", userRoutes);
-app.get("/health", (req, res) => {
-  const healthcheck = {
-    status: "OK",
-    service: "pnr-status-api",
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-    database:
-      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+
+// --- COOL HEALTH CHECK ENDPOINT ---
+app.get("/health", async (req, res) => {
+  const start = Date.now();
+  const dbState = mongoose.connection.readyState;
+  
+  // Mapping mongoose states to human words/emojis
+  const dbStatusMap = {
+    0: "Disconnected ❌",
+    1: "Connected 🟢",
+    2: "Connecting 🟡",
+    3: "Disconnecting 🟠",
   };
 
-  res.status(200).json(healthcheck);
+  let dbLatency = "N/A";
+  if (dbState === 1) {
+    try {
+      // Actually ping the DB to check responsiveness
+      await mongoose.connection.db.admin().ping();
+      dbLatency = `${Date.now() - start}ms`;
+    } catch (e) {
+      dbLatency = "Error";
+    }
+  }
+
+  const healthData = {
+    status: dbState === 1 ? "Operational 🚀" : "Degraded ⚠️",
+    timestamp: new Date().toISOString(),
+    uptime: getReadableUptime(),
+    database: {
+      connection: dbStatusMap[dbState] || "Unknown",
+      latency: dbLatency,
+    },
+    system: {
+      load_avg: os.loadavg().map(l => l.toFixed(2)),
+      free_mem: `${(os.freemem() / 1024 / 1024 / 1024).toFixed(2)} GB`,
+      platform: os.platform(),
+    },
+    process: {
+      memory_heap: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`,
+      node_version: process.version,
+    },
+    network: {
+      interface: Object.keys(os.networkInterfaces())[0],
+      host: os.hostname()
+    }
+  };
+
+  // Return 503 if DB is not connected so monitoring tools alert you
+  res.status(dbState === 1 ? 200 : 503).json(healthData);
 });
 
-const port = process.env.PORT;
-
+const port = process.env.PORT || 8000;
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`🚀 Engine started on port ${port}`);
 });
