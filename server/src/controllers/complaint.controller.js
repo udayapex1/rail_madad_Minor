@@ -5,8 +5,9 @@ import { uploadToCloudinary } from "../services/upload.service.js";
 import { categorizeComplaint } from "../services/ai/categorize.service.js";
 import { getRoutedDepartment } from "../services/routing.service.js";
 import Complaint from "../models/Complaint.model.js";
+import { User } from "../models/User.model.js";
 import { successResponse, errorResponse } from "../utils/responseHandler.js";
-
+import { sendComplaintMail } from "../utils/sendMail.js";
 export const submitComplaint = async (req, res) => {
   console.log("req.user →", req.user);
   try {
@@ -83,6 +84,19 @@ export const submitComplaint = async (req, res) => {
       },
     });
 
+    const user = await User.findById(req.user.userId).select("firstName email");
+
+    await sendComplaintMail({
+      to: user.email,
+      name: user.firstName,
+      complaintId: newComplaint.complaintId,
+      pnrNumber: newComplaint.pnrNumber,
+      category: newComplaint.category,
+      urgency: newComplaint.urgency,
+      department:newComplaint.department.departmentId, // populate karo pehle
+      status: newComplaint.status,
+      createdAt: newComplaint.createdAt,
+    });
     // ── 6. Response ────────────────────────────────────────────────────────
     return res.status(201).json({
       success: true,
@@ -102,7 +116,6 @@ export const submitComplaint = async (req, res) => {
   }
 };
 
-
 // ── Get My Complaints (Passenger) ──────────────────────────────────────────────
 export const getMyComplaints = async (req, res) => {
   try {
@@ -115,7 +128,7 @@ export const getMyComplaints = async (req, res) => {
     const complaints = await Complaint.find(filter)
       .populate("department", "name")
       .sort({ createdAt: -1 });
-    console.log(complaints)
+    console.log(complaints);
     return res.status(200).json({
       success: true,
       message: "Complaints fetched successfully",
@@ -137,17 +150,20 @@ export const getComplaintById = async (req, res) => {
       .populate("submittedBy", "firstName lastName email");
 
     if (!complaint) {
-      return res.status(404).json({ success: false, message: "Complaint not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Complaint not found" });
     }
 
     return res.status(200).json({
       success: true,
       message: "Complaint fetched successfully",
-      data:    complaint,
+      data: complaint,
     });
-
   } catch (error) {
     console.error("Get complaint error:", error);
-    return res.status(500).json({ success: false, message: "Something went wrong" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Something went wrong" });
   }
 };

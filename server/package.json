@@ -9,7 +9,7 @@
     "seed:departments": "node src/config/seeds/department.seed.js",
     "seed:admin": "node src/config/seeds/admin.seed.js",
     "seed:employees": "node src/config/seeds/employee.seed.js",
-    "seed:test" : "node src/config/seeds/testApi.js",
+    "seed:test": "node src/config/seeds/testApi.js",
     "test:categorize": "node src/services/ai/test.categorize.js"
   },
   "keywords": [],
@@ -27,7 +27,9 @@
     "mongoose": "^9.2.4",
     "multer": "^2.1.1",
     "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^8.0.1",
     "nodemon": "^3.1.14",
+    "pdfkit": "^0.17.2",
     "validator": "^13.15.26"
   }
 }
