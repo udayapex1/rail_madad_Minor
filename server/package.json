@@ -5,12 +5,18 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "seed:departments": "node src/config/seeds/department.seed.js",
+    "seed:admin": "node src/config/seeds/admin.seed.js",
+    "seed:employees": "node src/config/seeds/employee.seed.js",
+    "seed:test" : "node src/config/seeds/testApi.js",
+    "test:categorize": "node src/services/ai/test.categorize.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/vision": "^5.3.4",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",

@@ -5,15 +5,15 @@ export const successResponse = (
     message = "Success",
     data = null,
     user = null,
-    token = null
-  } = {}
+    token = null,
+  } = {},
 ) => {
   return res.status(status).json({
     success: true,
     message,
     ...(data && { data }),
     ...(user && { user }),
-    ...(token && { token })
+    ...(token && { token }),
   });
 };
 

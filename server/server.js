@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { ConnectDB } from "./src/config/db.js";
 import mongoose from "mongoose";
 import userRoutes from "./src/routes/auth.routes.js";
+import departmentRoutes from "./src/routes/department.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import os from "os";
@@ -49,6 +50,7 @@ try {
 
 app.use(cookieParser());
 app.use("/api/auth", userRoutes);
+app.use("/api/departments", departmentRoutes);
 
 // --- COOL HEALTH CHECK ENDPOINT ---
 app.get("/health", async (req, res) => {
