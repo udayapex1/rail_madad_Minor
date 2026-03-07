@@ -23,7 +23,7 @@ const timelineSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // ─── AI Metadata Sub Schema ────────────────────────────────────────────────────
@@ -45,7 +45,7 @@ const aiMetadataSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // ─── Main Complaint Schema ─────────────────────────────────────────────────────
@@ -65,14 +65,14 @@ const complaintSchema = new mongoose.Schema(
 
     // ref to Media collection
     mediaFiles: [
-  {
-    url:      { type: String, required: true },
-    publicId: { type: String, required: true },
-    type:     { type: String, enum: ["image", "video", "audio"] },
-    format:   { type: String },
-    size:     { type: Number },
-  }
-],
+      {
+        url: { type: String, required: true },
+        publicId: { type: String, required: true },
+        type: { type: String, enum: ["image", "video", "audio"] },
+        format: { type: String },
+        size: { type: Number },
+      },
+    ],
 
     department: {
       type: mongoose.Schema.Types.ObjectId,
@@ -131,8 +131,13 @@ const complaintSchema = new mongoose.Schema(
       ref: "ChatSession",
       default: null,
     },
+    pnrNumber: {
+  type:  String,
+  trim:  true,
+  default: null,   // optional
+},
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Complaint", complaintSchema);
