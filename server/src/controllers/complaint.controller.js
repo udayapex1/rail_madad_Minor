@@ -9,6 +9,13 @@ import { User } from "../models/User.model.js";
 import { successResponse, errorResponse } from "../utils/responseHandler.js";
 import { sendComplaintMail } from "../utils/sendMail.js";
 export const submitComplaint = async (req, res) => {
+ 
+  console.log("ENV CHECK →", {
+  openrouter: process.env.OPENROUTER_API_KEY ? "loaded" : "MISSING",
+  mongo:      process.env.MONGO_URI          ? "loaded" : "MISSING",
+  cloudinary: process.env.CLOUDINARY_API_KEY ? "loaded" : "MISSING",
+});
+
   console.log("req.user →", req.user);
   try {
     const { rawText } = req.body;

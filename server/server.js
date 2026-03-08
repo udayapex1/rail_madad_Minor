@@ -11,6 +11,12 @@ import os from "os";
 
 dotenv.config();
 
+console.log("ENV CHECK →", {
+  openrouter: process.env.OPENROUTER_API_KEY ? "loaded" : "MISSING",
+  // mongo:      process.env.MONGO_URI          ? "loaded" : "MISSING",
+  cloudinary: process.env.CLOUDINARY_API_KEY ? "loaded" : "MISSING",
+});
+
 const app = express();
 
 // --- HELPER: Human-readable Uptime ---
