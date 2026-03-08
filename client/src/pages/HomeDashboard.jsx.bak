@@ -1,0 +1,119 @@
+import { useNavigate } from 'react-router-dom'
+import BottomNav from '../components/BottomNav'
+
+export default function HomeDashboard() {
+  const navigate = useNavigate()
+
+  return (
+    <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+      {/* Top Navigation Bar */}
+      <header className="flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+        <div className="flex size-12 shrink-0 items-center justify-start">
+          <span className="material-symbols-outlined text-primary text-3xl">menu</span>
+        </div>
+        <h2 className="text-lg font-bold leading-tight tracking-tight flex-1 text-center font-display">
+          Rail Madad
+        </h2>
+        <div className="flex w-12 items-center justify-end">
+          <button className="flex items-center justify-center rounded-xl h-10 w-10 bg-primary/10 text-primary">
+            <span className="material-symbols-outlined">notifications</span>
+          </button>
+        </div>
+      </header>
+
+      <main className="flex-1 overflow-y-auto px-4 pb-24">
+        {/* Welcome Section */}
+        <div className="py-6">
+          <h3 className="tracking-tight text-3xl font-bold leading-tight font-display">Hello, Traveler</h3>
+          <p className="text-slate-500 dark:text-slate-400 text-base font-normal">
+            How can we assist you today?
+          </p>
+        </div>
+
+        {/* Main Action Cards */}
+        <div className="grid grid-cols-1 gap-4">
+          {/* File a Complaint */}
+          <div
+            onClick={() => navigate('/file-complaint')}
+            className="relative cursor-pointer overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm active:scale-[0.98] transition-transform"
+          >
+            <div className="p-6 flex flex-col items-center text-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/20">
+                <span className="material-symbols-outlined text-4xl">add_a_photo</span>
+              </div>
+              <div>
+                <h4 className="text-xl font-bold font-display">File a Complaint</h4>
+                <p className="text-slate-500 dark:text-slate-400 mt-1">
+                  Report issues instantly with photos or text
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/file-complaint')}
+                className="w-full mt-2 py-4 bg-primary text-white rounded-xl font-bold text-lg"
+              >
+                New Complaint
+              </button>
+            </div>
+          </div>
+
+          {/* My Complaints */}
+          <div
+            onClick={() => navigate('/complaints')}
+            className="relative cursor-pointer overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm active:scale-[0.98] transition-transform"
+          >
+            <div className="p-6 flex items-center gap-6">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <span className="material-symbols-outlined text-4xl">format_list_bulleted</span>
+              </div>
+              <div className="text-left flex-1">
+                <h4 className="text-xl font-bold font-display">My Complaints</h4>
+                <p className="text-slate-500 dark:text-slate-400">View history and track progress</p>
+              </div>
+              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Status Section */}
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-lg font-bold font-display">Recent Status</h4>
+            <button
+              onClick={() => navigate('/complaints')}
+              className="text-primary font-semibold text-sm"
+            >
+              View All
+            </button>
+          </div>
+
+          <div className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Complaint ID</p>
+                <p className="text-sm font-bold font-display">#RM-2025-48291</p>
+              </div>
+              <span className="px-3 py-1 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded-full text-xs font-bold">
+                In Progress
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-full bg-amber-500 w-[65%] rounded-full" />
+              </div>
+              <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
+                <div className="flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm">schedule</span>
+                  <span>Updated 2 hours ago</span>
+                </div>
+                <p className="font-medium text-primary">Assigned to DRM Office</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <BottomNav />
+    </div>
+  )
+}

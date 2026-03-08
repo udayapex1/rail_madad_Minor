@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js",
+    "seed:departments": "node src/config/seeds/department.seed.js",
+    "seed:admin": "node src/config/seeds/admin.seed.js",
+    "seed:employees": "node src/config/seeds/employee.seed.js",
+    "seed:test": "node src/config/seeds/testApi.js",
+    "test:categorize": "node src/services/ai/test.categorize.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/vision": "^5.3.4",
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^1.41.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.4",
+    "multer": "^2.1.1",
+    "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^8.0.1",
+    "nodemon": "^3.1.14",
+    "pdfkit": "^0.17.2",
+    "validator": "^13.15.26"
+  }
+}
