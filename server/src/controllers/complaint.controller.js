@@ -6,8 +6,12 @@ import { categorizeComplaint } from "../services/ai/categorize.service.js";
 import { getRoutedDepartment } from "../services/routing.service.js";
 import Complaint from "../models/Complaint.model.js";
 import { User } from "../models/User.model.js";
+import * as dotenv from "dotenv";
 import { successResponse, errorResponse } from "../utils/responseHandler.js";
 import { sendComplaintMail } from "../utils/sendMail.js";
+
+dotenv.config();
+
 export const submitComplaint = async (req, res) => {
  
   console.log("ENV CHECK →", {
