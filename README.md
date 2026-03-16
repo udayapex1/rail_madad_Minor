@@ -333,7 +333,6 @@ rail-madad/
 
 ---
 
-https://rail-madad-minor.onrender.com/health
 =======
 
 ## ✅ Tips & Troubleshooting
