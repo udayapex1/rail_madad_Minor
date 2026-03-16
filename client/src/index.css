@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    font-family: 'Public Sans', sans-serif;
+    min-height: 100dvh;
+  }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply relative overflow-hidden bg-gradient-to-br from-[#0000bb] via-primary to-[#1500cc]
+           text-white font-bold rounded-2xl shadow-glow
+           hover:brightness-110 hover:shadow-glow-lg
+           active:scale-[0.97] transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-primary/[0.08] text-primary font-bold rounded-2xl
+           border-2 border-primary/20
+           hover:bg-primary/[0.14] active:scale-[0.97] transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-white dark:bg-slate-900 rounded-2xl shadow-card
+           border border-slate-100/80 dark:border-slate-800/60;
+  }
+
+  .card-interactive {
+    @apply card cursor-pointer hover:shadow-card-hover active:scale-[0.98] transition-all duration-200;
+  }
+
+  .input-field {
+    @apply w-full rounded-xl border-2 border-slate-200 dark:border-slate-700
+           bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white
+           focus:border-primary focus:ring-4 focus:ring-primary/10
+           transition-all duration-200 placeholder:text-slate-400 outline-none;
+  }
+
+  .glass {
+    @apply bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl
+           border border-white/40 dark:border-slate-700/40;
+  }
+
+  .nav-floating {
+    @apply bg-white dark:bg-slate-900 rounded-[22px] shadow-float
+           border border-slate-100 dark:border-slate-800;
+  }
+
+  .gradient-header {
+    background: linear-gradient(135deg, #000099 0%, #1500cc 60%, #2800ff 100%);
+  }
+
+  .badge-active {
+    @apply bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent;
+  }
+}
