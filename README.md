@@ -190,17 +190,4 @@ rail-madad/
 | `/feedback` | Feedback & Rating |
 
 ---
-
-## Security
-
-- Passwords hashed with **bcryptjs** (10 salt rounds)
-- JWT stored in **HTTP-only cookies** (XSS-safe)
-- Cookies set to `SameSite: strict` in production
-- CORS whitelist — only authorized origins allowed
-- Input validated with **validator.js** on all auth fields
-
----
-
-## License
-
-ISC © Rail Madad Team
+https://rail-madad-minor.onrender.com/health
