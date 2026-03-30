@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import SideNav from './components/SideNav'
 import WelcomeScreen from './pages/WelcomeScreen'
+import LandingPage from './pages/LandingPage'
 import Login from './pages/Login'
 import CreateAccount from './pages/CreateAccount'
 import HomeDashboard from './pages/HomeDashboard'
@@ -32,7 +33,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<WelcomeScreen />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<CreateAccount />} />
         <Route path="/track" element={<TrackComplaint />} />
