@@ -18,110 +18,109 @@ File complaints · Track status · AI analysis · Secure auth
 
 ---
 
-## 🚀 Product Overview
+## 🚀 What is Rail Madad?
 
-Rail Madad is a mobile-first grievance platform designed for Indian Railways passengers. It lets users submit complaints, attach evidence, track status, and receive intelligent categorization via AI. The application also includes secure authentication and a lightweight chat-based support interface.
+Rail Madad is a mobile-first grievance platform designed for Indian Railways passengers. It lets users submit complaints, attach evidence, track status, and receive intelligent categorization via AI. The application also includes secure authentication and a chat-based support interface.
 
 ---
 
-## ✨ Key Features
+## ✨ Features
 
-- ✅ **Complaint Filing** with attachments (images/docs) via Cloudinary
-- ✅ **Complaint Tracking** (My Complaints + detail view)
-- ✅ **AI Analysis** - auto-categorizes complaints and suggests next steps
-- ✅ **User Authentication** - JWT stored in secure HTTP-only cookies
-- ✅ **Real-time Health Check** - server + database status endpoint
-- ✅ **Responsive UI** built with React/Tailwind
+- 🎫 **PNR Status** — real-time passenger name record lookup
+- 📋 **File Complaints** — submit and track grievances end-to-end with attachments (images/docs) via Cloudinary
+- 🤖 **AI Analysis** — intelligent complaint categorization and next-step suggestions
+- 💬 **Chat Support** — AI-powered live chat assistant
+- 🔐 **Auth** — JWT-based login with secure HTTP-only cookies
+- ☁️ **File Uploads** — Cloudinary-backed image/document attachments (up to 5 per complaint)
+- ✅ **Health Check** — real-time server + database status endpoint
 
 ---
 
 ## 🧱 Tech Stack
 
 | Layer | Tech |
-|------|------|
-| Frontend | React 18, Vite, Tailwind CSS, React Router |
-| Backend | Node.js, Express.js, MongoDB, Mongoose |
-| Auth | JWT (HTTP-only cookies), bcryptjs |
-| Storage | Cloudinary (via multer) |
+|-------|------|
+| Frontend | React 18, Vite, Tailwind CSS 3, React Router 6 |
+| Backend | Node.js, Express.js v5 |
+| Database | MongoDB, Mongoose |
+| Auth | JWT, bcryptjs |
+| Storage | Cloudinary, Multer |
 | AI | OpenRouter / OpenAI (configurable) |
 
 ---
 
-## 🧰 Setup (Local Development)
+## 🧰 Getting Started
 
-### 1) Clone repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/your-username/rail-madad.git
 cd rail-madad
 ```
 
-### 2) Start backend
+### 2. Start the backend
 
 ```bash
 cd server
 npm install
-cp .env.example .env
-# update .env values (Mongo URI, JWT secret, Cloudinary keys)
+cp .env.example .env   # fill in your values
 npm start
 ```
 
-> Backend runs at `http://localhost:8000`
+> Runs at `http://localhost:8000`
 
-### 3) Start frontend
+### 3. Start the frontend
 
 ```bash
-cd ../client
+cd client
 npm install
 npm run dev
 ```
 
-> Frontend runs at `http://localhost:5173`
+> Runs at `http://localhost:5173`
 
 ---
 
 ## 🔧 Environment Variables
 
-Create `.env` inside `server/`:
+Create `server/.env`:
 
 ```env
 PORT=8000
 NODE_ENV=development
 MONGODB_URI=mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/<db>
-JWT_SECRET_KEY=<your-secret>
+JWT_SECRET_KEY=<your-256-char-secret>
 
-# (Optional) File upload via Cloudinary
+# Optional — for file uploads
 CLOUDINARY_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 
-# (Optional) AI analysis (OpenRouter/OpenAI)
+# Optional — for AI analysis
 OPENROUTER_API_KEY=
 ```
 
 ---
 
-## 📡 API Documentation (Backend)
+## 📡 API Reference
 
 Base URL: `http://localhost:8000/api`
 
-### ✅ Health Check
+### Auth (`/api/auth`)
 
-`GET /health`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/auth/register` | Create a new account |
+| `POST` | `/auth/login` | Login and receive JWT cookie |
+| `POST` | `/auth/logout` | Clear auth cookie |
+| `GET` | `/auth/profile` | Get current user profile (auth required) |
+| `GET` | `/health` | Server + DB status |
 
-- Returns server uptime, DB status, and system info.
-
----
-
-### 🧑‍💻 Auth (Routes: `/api/auth`)
-
-#### POST `/auth/register`
-
-Create a new user.
-
-Request body (JSON):
+<details>
+<summary><b>POST</b> /auth/register</summary>
 
 ```json
+// Request
 {
   "firstName": "Sita",
   "lastName": "Sharma",
@@ -129,233 +128,144 @@ Request body (JSON):
   "password": "StrongPassword123!",
   "phoneNumber": "+919876543210"
 }
-```
 
-Success response (201):
-
-```json
+// Response 201
 {
   "success": true,
   "message": "User registered successfully",
   "data": { "_id": "...", "firstName": "Sita", "email": "sita@example.com" }
 }
 ```
+</details>
 
----
-
-#### POST `/auth/login`
-
-Login and set a JWT cookie.
-
-Request body (JSON):
+<details>
+<summary><b>POST</b> /auth/login</summary>
 
 ```json
+// Request
 {
   "email": "sita@example.com",
   "password": "StrongPassword123!"
 }
-```
 
-Success response (200):
-
-```json
+// Response 200
 {
   "success": true,
   "message": "User logged in successfully",
   "data": {
     "user": { "_id": "...", "email": "sita@example.com", "firstName": "Sita" },
-    "token": "<jwt-token>"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   }
 }
 ```
 
-> The JWT token is also stored in an HTTP-only `token` cookie for subsequent authenticated requests.
+> The JWT is also stored in an HTTP-only `token` cookie for subsequent authenticated requests.
+</details>
 
 ---
 
-#### POST `/auth/logout`
+### Departments (`/api/departments`)
 
-Logs out the user by clearing the cookie.
-
-Success response (200):
-
-```json
-{
-  "success": true,
-  "message": "User logged out successfully",
-  "data": null
-}
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/departments` | List all departments |
+| `GET` | `/departments/:id` | Get department by ID |
 
 ---
 
-#### GET `/auth/profile`
+### Complaints (`/api/complaints`)
 
-Returns current authenticated user profile.
+> All complaint endpoints require authentication (JWT cookie from login).
 
-> Requires a valid `token` cookie (sent automatically by the browser after login).
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/complaints/submit` | Submit a new complaint (multipart/form-data) |
+| `GET` | `/complaints/my-complaints` | Fetch complaints for the logged-in user |
+| `GET` | `/complaints/:complaintId` | Get a single complaint by ID |
 
-Success response (200):
+<details>
+<summary><b>POST</b> /complaints/submit — Form Fields</summary>
 
-```json
-{
-  "success": true,
-  "message": "User profile retrieved successfully",
-  "data": { "user": { "_id": "...", "email": "sita@example.com", "firstName": "Sita" } }
-}
-```
-
----
-
-### 🏢 Departments (Routes: `/api/departments`)
-
-#### GET `/departments`
-
-List all departments.
-
-Success response (200):
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | Complaint title |
+| `description` | string | Detailed description |
+| `departmentId` | string | Target department ID |
+| `files` | file[] | Up to 5 attachments |
 
 ```json
-{
-  "success": true,
-  "message": "Departments fetched successfully",
-  "data": [ { "_id": "...", "name": "Food" }, ... ]
-}
-```
-
----
-
-#### GET `/departments/:id`
-
-Get department detail by ID.
-
-Success response (200):
-
-```json
-{
-  "success": true,
-  "message": "Department fetched successfully",
-  "data": { "_id": "...", "name": "Food" }
-}
-```
-
----
-
-### 📂 Complaints (Routes: `/api/complaints`)
-
-> The complaint endpoints require authentication (use the `token` cookie after login).
-
-#### POST `/complaints/submit`
-
-Submit a new complaint (supports file uploads).
-
-Form data fields:
-- `title` (string)
-- `description` (string)
-- `departmentId` (string)
-- `files` (up to 5 files)
-
-Success response (201):
-
-```json
+// Response 201
 {
   "success": true,
   "message": "Complaint submitted successfully",
   "data": { "_id": "...", "status": "pending", ... }
 }
 ```
+</details>
 
 ---
 
-#### GET `/complaints/my-complaints`
+## 🗺️ Frontend Routes
 
-Fetch complaints submitted by the logged-in user.
-
-Success response (200):
-
-```json
-{
-  "success": true,
-  "message": "Complaints retrieved successfully",
-  "data": [ { "_id": "...", "title": "Train delayed", ... }, ... ]
-}
-```
-
----
-
-#### GET `/complaints/:complaintId`
-
-Get a single complaint by its ID.
-
-Success response (200):
-
-```json
-{
-  "success": true,
-  "message": "Complaint fetched successfully",
-  "data": { "_id": "...", "title": "Train delayed", ... }
-}
-```
+| Path | Page |
+|------|------|
+| `/` | Welcome Screen |
+| `/login` | Login |
+| `/register` | Create Account |
+| `/home` | Dashboard |
+| `/file-complaint` | File Complaint |
+| `/complaints` | My Complaints |
+| `/ai-analysis` | AI Analysis |
+| `/chat` | Chat Support |
+| `/feedback` | Feedback & Rating |
 
 ---
 
-## 📝 Project Structure
+## 📁 Project Structure
 
 ```
 rail-madad/
 ├── client/                  # React frontend
-│   ├── public/
 │   └── src/
-│       ├── components/      # Shared UI components
-│       ├── pages/           # Route pages
+│       ├── components/      # Shared UI components (BottomNav, Header)
+│       ├── pages/           # All route pages
 │       └── App.jsx          # Route definitions
 │
 └── server/                  # Express backend
-    ├── server.js           # Entrypoint
-    ├── package.json
     └── src/
-        ├── config/          # DB, cloudinary, AI config
+        ├── config/          # DB, Cloudinary, AI config
         ├── controllers/     # Business logic (auth, complaints)
-        ├── middleware/      # Auth, upload, error handling
+        ├── middleware/      # JWT auth, upload, error handling
         ├── models/          # Mongoose schemas
         ├── routes/          # Express routers
-        └── utils/           # Helpers (response handler, mail)
+        └── utils/           # Response handlers, mailer
 ```
 
 ---
 
 ## 🛡️ Security Notes
 
-- Passwords are hashed with **bcryptjs** (10 salt rounds)
-- JWT is stored in an **HTTP-only cookie** (prevents access from JS)
-- CORS is restricted to allowed origins defined in `server.js`
-- File uploads are handled via **multer** and **Cloudinary** (secure storage)
+- Passwords hashed with **bcryptjs** (10 salt rounds)
+- JWT stored in **HTTP-only cookies** (inaccessible to client-side JS)
+- CORS restricted to allowed origins defined in `server.js`
+- File uploads handled securely via **multer** + **Cloudinary**
 
 ---
 
-=======
+## 🧩 Tips & Troubleshooting
 
-## ✅ Tips & Troubleshooting
-
-- If you see CORS errors, make sure the front-end origin is listed in `server/server.js` `allowedOrigins`.
-- For local testing, use a tool like Postman or Insomnia and enable `Send cookies` for auth-protected endpoints.
-- If MongoDB connection fails, verify `MONGODB_URI` and that the database allows access from your IP.
+- **CORS errors** — ensure the frontend origin is in `allowedOrigins` inside `server/server.js`
+- **Auth-protected endpoints** — use Postman/Insomnia with "Send cookies" enabled
+- **MongoDB failures** — verify `MONGODB_URI` and that your IP is whitelisted in Atlas
 
 ---
 
-## 🧩 Contribution
+## 🤝 Contributing
 
-Pull requests are welcome! If you want to add features (feedback system, admin dashboard, email notifications), open an issue or submit a PR.
+Pull requests are welcome! If you'd like to add features (admin dashboard, email notifications, analytics), open an issue or submit a PR.
 
 ---
 
 ## 📄 License
 
 MIT © Rail Madad Team
-
-
----
-
-## License
-  kjabcasjkfb sjss aasfhsdlgh asofhsdjkfbdfjk
-ISC © Rail Madad Team

@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom'
 
 export default function Header({ title, subtitle, showBack = false, showNotification = false }) {
   const navigate = useNavigate()
+=======
+import { useNavigate, useOutletContext } from 'react-router-dom'
+
+export default function Header({ title, subtitle, showBack = false, showNotification = false }) {
+  const navigate = useNavigate()
+  const { toggleSidebar } = useOutletContext()
+>>>>>>> dev
 
   return (
     <header className="sticky top-0 z-10 flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-primary/10">
@@ -14,9 +22,18 @@ export default function Header({ title, subtitle, showBack = false, showNotifica
           <span className="material-symbols-outlined text-primary text-3xl">arrow_back</span>
         </button>
       ) : (
+<<<<<<< HEAD
         <div className="flex size-12 shrink-0 items-center justify-start">
           <span className="material-symbols-outlined text-primary text-3xl">menu</span>
         </div>
+=======
+        <button
+          onClick={toggleSidebar}
+          className="lg:hidden flex size-12 shrink-0 items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+          <span className="material-symbols-outlined text-primary text-3xl">menu</span>
+        </button>
+>>>>>>> dev
       )}
 
       <div className="flex-1 text-center pr-12">

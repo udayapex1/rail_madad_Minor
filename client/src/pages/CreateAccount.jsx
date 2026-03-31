@@ -28,7 +28,11 @@ export default function CreateAccount() {
         <button onClick={() => navigate(-1)} className="absolute top-12 left-4 size-10 bg-white/15 border border-white/20 rounded-xl flex items-center justify-center text-white backdrop-blur-sm">
           <span className="material-symbols-outlined text-xl">arrow_back</span>
         </button>
+<<<<<<< HEAD
         <div className="relative z-10 flex flex-col items-center text-center px-6 pt-14 pb-16 lg:pt-0 lg:pb-0 animate-bounce-in">
+=======
+        <div className="relative z-10 flex flex-col items-center text-center px-6 pt-14 pb-32 lg:pt-0 lg:pb-0 animate-bounce-in">
+>>>>>>> dev
           <div className="size-16 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center mb-3 backdrop-blur-sm">
             <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>person_add</span>
           </div>

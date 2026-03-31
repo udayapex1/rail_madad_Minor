@@ -31,7 +31,11 @@ export default function WelcomeScreen() {
         </div>
 
         {/* Hero text */}
+<<<<<<< HEAD
         <div className="relative z-10 px-6 pt-7 pb-16 animate-fade-in lg:flex lg:flex-col lg:justify-center lg:h-[calc(100vh-88px)] lg:pb-10">
+=======
+        <div className="relative z-10 px-6 pt-7 pb-32 animate-fade-in lg:flex lg:flex-col lg:justify-center lg:h-[calc(100vh-88px)] lg:pb-10">
+>>>>>>> dev
           <h1 className="text-white text-[38px] lg:text-5xl font-black leading-tight tracking-tight mb-3">
             Report Railway<br />Issues Instantly
           </h1>

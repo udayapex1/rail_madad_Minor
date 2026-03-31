@@ -107,7 +107,11 @@ export default function TrackComplaint() {
           <span className="material-symbols-outlined text-xl">arrow_back</span>
         </button>
 
+<<<<<<< HEAD
         <div className="relative z-10 flex flex-col items-center text-center px-6 pt-14 pb-16 lg:pt-0 lg:pb-0 animate-bounce-in">
+=======
+        <div className="relative z-10 flex flex-col items-center text-center px-6 pt-14 pb-32 lg:pt-0 lg:pb-0 animate-bounce-in">
+>>>>>>> dev
           <div className="size-20 rounded-3xl bg-white/20 border-2 border-white/30 flex items-center justify-center mb-4 backdrop-blur-sm shadow-glow">
             <span
               className="material-symbols-outlined text-white text-4xl"

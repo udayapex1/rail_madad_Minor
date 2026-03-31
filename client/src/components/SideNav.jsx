@@ -8,11 +8,32 @@ const navItems = [
   { label: 'Profile',    icon: 'person',        path: '/profile',      fillOnActive: true },
 ]
 
+<<<<<<< HEAD
 export default function SideNav() {
   const { pathname } = useLocation()
 
   return (
     <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-screen w-[240px] bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 z-50">
+=======
+export default function SideNav({ isOpen, onClose }) {
+  const { pathname } = useLocation()
+
+  return (
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] lg:hidden animate-fade-in"
+          onClick={onClose}
+        />
+      )}
+
+      <aside
+        className={`fixed left-0 top-0 h-screen w-[280px] lg:w-[240px] bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 z-[70] transition-transform duration-300 lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } flex flex-col`}
+      >
+>>>>>>> dev
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 pt-6 pb-5 border-b border-slate-100 dark:border-slate-800">
         <div className="size-9 rounded-xl bg-gradient-to-br from-primary to-[#2800ff] flex items-center justify-center shadow-glow shrink-0">
@@ -23,16 +44,33 @@ export default function SideNav() {
             train
           </span>
         </div>
+<<<<<<< HEAD
         <div>
           <p className="text-primary font-black text-[15px] leading-tight">Rail Madad</p>
           <p className="text-slate-400 text-[10px] font-semibold uppercase tracking-widest">v2.0 Official</p>
         </div>
+=======
+        <div className="flex-1">
+          <p className="text-primary font-black text-[15px] leading-tight">Rail Madad</p>
+          <p className="text-slate-400 text-[10px] font-semibold uppercase tracking-widest">v2.0 Official</p>
+        </div>
+        <button
+          onClick={onClose}
+          className="lg:hidden flex size-8 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+          <span className="material-symbols-outlined text-slate-400 text-xl">close</span>
+        </button>
+>>>>>>> dev
       </div>
 
       {/* File Complaint CTA */}
       <div className="px-4 py-4">
         <Link
           to="/file-complaint"
+<<<<<<< HEAD
+=======
+          onClick={onClose}
+>>>>>>> dev
           className="btn-primary w-full h-11 text-sm flex items-center justify-center gap-2"
         >
           <span
@@ -53,6 +91,10 @@ export default function SideNav() {
             <Link
               key={item.path}
               to={item.path}
+<<<<<<< HEAD
+=======
+              onClick={onClose}
+>>>>>>> dev
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
                 isActive
                   ? 'bg-primary/[0.08] text-primary'
@@ -78,6 +120,10 @@ export default function SideNav() {
       <div className="px-3 pb-5 pt-3 border-t border-slate-100 dark:border-slate-800">
         <Link
           to="/profile"
+<<<<<<< HEAD
+=======
+          onClick={onClose}
+>>>>>>> dev
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           <div className="size-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -96,5 +142,9 @@ export default function SideNav() {
         </Link>
       </div>
     </aside>
+<<<<<<< HEAD
+=======
+    </>
+>>>>>>> dev
   )
 }

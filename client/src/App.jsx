@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import SideNav from './components/SideNav'
 import WelcomeScreen from './pages/WelcomeScreen'
+<<<<<<< HEAD
+=======
+import LandingPage from './pages/LandingPage'
+>>>>>>> dev
 import Login from './pages/Login'
 import CreateAccount from './pages/CreateAccount'
 import HomeDashboard from './pages/HomeDashboard'
@@ -12,6 +16,7 @@ import FeedbackRating from './pages/FeedbackRating'
 import Profile from './pages/Profile'
 import TrackComplaint from './pages/TrackComplaint'
 
+<<<<<<< HEAD
 function AppShell() {
   return (
     <>
@@ -20,6 +25,21 @@ function AppShell() {
         <Outlet />
       </div>
     </>
+=======
+import { useState } from 'react'
+
+function AppShell() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
+
+  return (
+    <div className="relative min-h-screen bg-background-light dark:bg-background-dark">
+      <SideNav isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <div className="lg:ml-[240px]">
+        <Outlet context={{ toggleSidebar }} />
+      </div>
+    </div>
+>>>>>>> dev
   )
 }
 
@@ -27,7 +47,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+<<<<<<< HEAD
         <Route path="/" element={<WelcomeScreen />} />
+=======
+        <Route path="/" element={<LandingPage />} />
+>>>>>>> dev
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<CreateAccount />} />
         <Route path="/track" element={<TrackComplaint />} />

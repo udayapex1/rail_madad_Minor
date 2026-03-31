@@ -1,14 +1,29 @@
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom'
+=======
+import { useNavigate, useOutletContext } from 'react-router-dom'
+>>>>>>> dev
 import BottomNav from '../components/BottomNav'
 
 export default function HomeDashboard() {
   const navigate = useNavigate()
+<<<<<<< HEAD
+=======
+  const { toggleSidebar } = useOutletContext()
+>>>>>>> dev
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
       {/* Header */}
       <header className="flex items-center px-4 py-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 sticky top-0 z-10">
+<<<<<<< HEAD
         <button className="flex lg:hidden size-10 items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+=======
+        <button
+          onClick={toggleSidebar}
+          className="flex lg:hidden size-10 items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+>>>>>>> dev
           <span className="material-symbols-outlined text-slate-700 dark:text-slate-300 text-[26px]">menu</span>
         </button>
         <div className="hidden lg:flex size-10" />
