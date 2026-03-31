@@ -1,6 +1,8 @@
 import express from "express";
 import Department from "../models/Department.model.js";
 import { successResponse , errorResponse } from "../utils/responseHandler.js";
+
+
 export const getDepartments = async (req, res) => {
   try {
     const departments = await Department.find();
