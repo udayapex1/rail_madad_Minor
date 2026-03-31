@@ -1,20 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
+import { NAV_ITEMS } from '../../constants/navigation'
+import Icon from '../common/Icon'
 
-const navItems = [
-  { label: 'Home',       icon: 'home',         path: '/home',         fillOnActive: true },
-  { label: 'Complaints', icon: 'assignment',    path: '/complaints',   fillOnActive: true },
-  { label: 'AI Help',    icon: 'smart_toy',     path: '/ai-analysis',  fillOnActive: true },
-  { label: 'Chat',       icon: 'support_agent', path: '/chat',         fillOnActive: true },
-  { label: 'Profile',    icon: 'person',        path: '/profile',      fillOnActive: true },
-]
-
-<<<<<<< HEAD
-export default function SideNav() {
-  const { pathname } = useLocation()
-
-  return (
-    <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-screen w-[240px] bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 z-50">
-=======
 export default function SideNav({ isOpen, onClose }) {
   const { pathname } = useLocation()
 
@@ -33,23 +20,11 @@ export default function SideNav({ isOpen, onClose }) {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } flex flex-col`}
       >
->>>>>>> dev
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 pt-6 pb-5 border-b border-slate-100 dark:border-slate-800">
         <div className="size-9 rounded-xl bg-gradient-to-br from-primary to-[#2800ff] flex items-center justify-center shadow-glow shrink-0">
-          <span
-            className="material-symbols-outlined text-white text-xl"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            train
-          </span>
+          <Icon name="train" fill className="text-white" size="text-xl" />
         </div>
-<<<<<<< HEAD
-        <div>
-          <p className="text-primary font-black text-[15px] leading-tight">Rail Madad</p>
-          <p className="text-slate-400 text-[10px] font-semibold uppercase tracking-widest">v2.0 Official</p>
-        </div>
-=======
         <div className="flex-1">
           <p className="text-primary font-black text-[15px] leading-tight">Rail Madad</p>
           <p className="text-slate-400 text-[10px] font-semibold uppercase tracking-widest">v2.0 Official</p>
@@ -58,55 +33,43 @@ export default function SideNav({ isOpen, onClose }) {
           onClick={onClose}
           className="lg:hidden flex size-8 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
         >
-          <span className="material-symbols-outlined text-slate-400 text-xl">close</span>
+          <Icon name="close" className="text-slate-400" size="text-xl" />
         </button>
->>>>>>> dev
       </div>
 
       {/* File Complaint CTA */}
       <div className="px-4 py-4">
         <Link
           to="/file-complaint"
-<<<<<<< HEAD
-=======
           onClick={onClose}
->>>>>>> dev
           className="btn-primary w-full h-11 text-sm flex items-center justify-center gap-2"
         >
-          <span
-            className="material-symbols-outlined text-lg"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            add_circle
-          </span>
+          <Icon name="add_circle" fill size="text-lg" />
           File Complaint
         </Link>
       </div>
 
       {/* Nav items */}
       <nav className="flex-1 flex flex-col gap-0.5 px-3 overflow-y-auto no-scrollbar">
-        {navItems.map((item) => {
+        {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.path
           return (
             <Link
               key={item.path}
               to={item.path}
-<<<<<<< HEAD
-=======
               onClick={onClose}
->>>>>>> dev
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
                 isActive
                   ? 'bg-primary/[0.08] text-primary'
                   : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
               }`}
             >
-              <span
-                className={`material-symbols-outlined text-[20px] shrink-0 ${isActive ? 'text-primary' : ''}`}
-                style={isActive && item.fillOnActive ? { fontVariationSettings: "'FILL' 1" } : {}}
-              >
-                {item.icon}
-              </span>
+              <Icon
+                name={item.icon}
+                fill={isActive && item.fillOnActive}
+                className={`shrink-0 ${isActive ? 'text-primary' : ''}`}
+                size="text-[20px]"
+              />
               <span className={`text-sm font-bold flex-1 ${isActive ? 'text-primary' : ''}`}>
                 {item.label}
               </span>
@@ -120,31 +83,20 @@ export default function SideNav({ isOpen, onClose }) {
       <div className="px-3 pb-5 pt-3 border-t border-slate-100 dark:border-slate-800">
         <Link
           to="/profile"
-<<<<<<< HEAD
-=======
           onClick={onClose}
->>>>>>> dev
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           <div className="size-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-            <span
-              className="material-symbols-outlined text-primary text-xl"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              person
-            </span>
+            <Icon name="person" fill className="text-primary" size="text-xl" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">Ramesh Kumar</p>
             <p className="text-xs text-slate-400 truncate">ramesh@example.com</p>
           </div>
-          <span className="material-symbols-outlined text-slate-400 text-lg shrink-0">chevron_right</span>
+          <Icon name="chevron_right" className="text-slate-400" size="text-lg" />
         </Link>
       </div>
     </aside>
-<<<<<<< HEAD
-=======
     </>
->>>>>>> dev
   )
 }

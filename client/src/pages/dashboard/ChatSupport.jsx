@@ -1,32 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import BottomNav from '../components/BottomNav'
-
-const initialMessages = [
-  {
-    id: 1,
-    from: 'bot',
-    text: "Hi Ramesh! 👋 We received your complaint about a cleanliness issue. The housekeeping team has been notified. Can you tell us which coach you are in?",
-    time: '10:05 AM',
-  },
-  {
-    id: 2,
-    from: 'user',
-    text: 'S4',
-    time: '10:06 AM',
-  },
-  {
-    id: 3,
-    from: 'bot',
-    text: 'Thank you! Our team is on the way. Expected resolution time is 1–2 hours. You will receive an update shortly.',
-    time: '10:07 AM',
-  },
-]
+import { GradientPanel } from '../../components/layout'
+import Icon from '../../components/common/Icon'
+import { INITIAL_CHAT_MESSAGES } from '../../constants/mockData'
 
 export default function ChatSupport() {
   const navigate = useNavigate()
   const [input, setInput] = useState('')
-  const [messages, setMessages] = useState(initialMessages)
+  const [messages, setMessages] = useState(INITIAL_CHAT_MESSAGES)
   const bottomRef = useRef(null)
 
   useEffect(() => {
@@ -44,37 +25,28 @@ export default function ChatSupport() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
-
-      {/* Gradient Header — full width */}
+      {/* Header */}
       <header
         className="shrink-0 pt-4 pb-4"
         style={{ background: 'linear-gradient(135deg, #000099 0%, #1500cc 55%, #2800ff 100%)' }}
       >
         <div className="max-w-4xl mx-auto px-4">
-          {/* Page title row */}
           <div className="flex items-center mb-3">
             <button
               onClick={() => navigate(-1)}
               className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/15 border border-white/20 text-white hover:bg-white/25 transition-colors"
             >
-              <span className="material-symbols-outlined text-xl">arrow_back</span>
+              <Icon name="arrow_back" size="text-xl" />
             </button>
             <h2 className="text-white font-black flex-1 text-center text-base">Chat Support</h2>
             <div className="size-10" />
           </div>
 
-          {/* Bot info row */}
           <div className="flex items-center gap-3">
             <div className="relative flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/20 border border-white/30">
-              <span
-                className="material-symbols-outlined text-white text-2xl"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                smart_toy
-              </span>
+              <Icon name="smart_toy" fill className="text-white" size="text-2xl" />
               <span className="absolute -bottom-0.5 -right-0.5 size-3 bg-green-400 rounded-full border-2 border-white" />
             </div>
-
             <div className="flex-1">
               <p className="text-white font-bold text-base leading-tight">Rail Madad Assistant</p>
               <div className="flex items-center gap-1.5 mt-0.5">
@@ -82,9 +54,8 @@ export default function ChatSupport() {
                 <span className="text-white/70 text-xs font-medium">Online · Typically replies instantly</span>
               </div>
             </div>
-
             <button className="flex size-10 items-center justify-center rounded-2xl bg-white/15 border border-white/20 text-white hover:bg-white/25 transition-colors">
-              <span className="material-symbols-outlined text-xl">info</span>
+              <Icon name="info" size="text-xl" />
             </button>
           </div>
         </div>
@@ -93,7 +64,6 @@ export default function ChatSupport() {
       {/* Chat scroll area */}
       <div className="flex-1 overflow-y-auto no-scrollbar">
         <div className="max-w-4xl mx-auto px-4 py-4 space-y-5">
-          {/* Date pill */}
           <div className="flex justify-center">
             <span className="px-3 py-1 bg-slate-200/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[11px] font-bold rounded-full uppercase tracking-wider">
               Today
@@ -104,12 +74,7 @@ export default function ChatSupport() {
             msg.from === 'bot' ? (
               <div key={msg.id} className="flex items-end gap-2.5 max-w-[75%] animate-slide-up">
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[#1500cc] shadow-glow">
-                  <span
-                    className="material-symbols-outlined text-white text-base"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    smart_toy
-                  </span>
+                  <Icon name="smart_toy" fill className="text-white" size="text-base" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="rounded-2xl rounded-bl-sm px-4 py-3 bg-white dark:bg-slate-800 shadow-card border border-slate-100 dark:border-slate-700">
@@ -126,16 +91,11 @@ export default function ChatSupport() {
                   </div>
                   <div className="flex items-center gap-1 mr-1">
                     <span className="text-[10px] text-slate-400">{msg.time}</span>
-                    <span
-                      className="material-symbols-outlined text-[13px] text-primary"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      done_all
-                    </span>
+                    <Icon name="done_all" fill className="text-primary" size="text-[13px]" />
                   </div>
                 </div>
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-800 shadow-sm">
-                  <span className="material-symbols-outlined text-slate-600 dark:text-slate-300 text-lg">person</span>
+                  <Icon name="person" className="text-slate-600 dark:text-slate-300" size="text-lg" />
                 </div>
               </div>
             )
@@ -144,7 +104,7 @@ export default function ChatSupport() {
         </div>
       </div>
 
-      {/* Input Area — full width with inner max-width */}
+      {/* Input Area */}
       <div className="shrink-0 bg-white/80 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200/60 dark:border-slate-800 pb-[84px] lg:pb-4">
         <div className="max-w-4xl mx-auto px-4 pt-3">
           <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-2xl px-3 py-2 border-2 border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all">
@@ -161,21 +121,15 @@ export default function ChatSupport() {
               disabled={!input.trim()}
               className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[#2800ff] text-white shadow-glow transition-all hover:scale-105 active:scale-95 disabled:opacity-40 disabled:scale-100"
             >
-              <span className="material-symbols-outlined text-lg">send</span>
+              <Icon name="send" size="text-lg" />
             </button>
           </div>
           <div className="mt-2.5 mb-1 flex justify-center gap-6">
-            <button className="text-[10px] font-bold text-primary uppercase tracking-widest hover:underline">
-              View Ticket
-            </button>
-            <button className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:underline">
-              End Chat
-            </button>
+            <button className="text-[10px] font-bold text-primary uppercase tracking-widest hover:underline">View Ticket</button>
+            <button className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:underline">End Chat</button>
           </div>
         </div>
       </div>
-
-      <BottomNav />
     </div>
   )
 }

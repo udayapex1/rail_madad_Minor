@@ -1,11 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-
-const navItems = [
-  { label: 'Home', icon: 'home', path: '/home', fillOnActive: true },
-  { label: 'Complaints', icon: 'assignment', path: '/complaints', fillOnActive: true },
-  { label: 'AI', icon: 'smart_toy', path: '/ai-analysis', fillOnActive: true },
-  { label: 'Profile', icon: 'person', path: '/profile', fillOnActive: true },
-]
+import { BOTTOM_NAV_ITEMS } from '../../constants/navigation'
+import Icon from '../common/Icon'
 
 export default function BottomNav() {
   const { pathname } = useLocation()
@@ -14,7 +9,7 @@ export default function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pt-0 lg:hidden">
       <div className="nav-floating max-w-lg mx-auto">
         <div className="flex justify-around items-center h-[62px] px-2">
-          {navItems.map((item) => {
+          {BOTTOM_NAV_ITEMS.map((item) => {
             const isActive = pathname === item.path
             return (
               <Link
@@ -25,14 +20,14 @@ export default function BottomNav() {
                 {isActive && (
                   <span className="absolute inset-0 bg-primary/[0.08] rounded-xl" />
                 )}
-                <span
-                  className={`material-symbols-outlined text-[22px] transition-all duration-200 ${
+                <Icon
+                  name={item.icon}
+                  fill={isActive && item.fillOnActive}
+                  className={`transition-all duration-200 ${
                     isActive ? 'text-primary scale-110' : 'text-slate-400 dark:text-slate-500'
                   }`}
-                  style={isActive && item.fillOnActive ? { fontVariationSettings: "'FILL' 1" } : {}}
-                >
-                  {item.icon}
-                </span>
+                  size="text-[22px]"
+                />
                 <p
                   className={`text-[9px] font-bold uppercase tracking-wider transition-all duration-200 ${
                     isActive ? 'text-primary' : 'text-slate-400 dark:text-slate-500'

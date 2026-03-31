@@ -1,71 +1,51 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
-import SideNav from './components/SideNav'
-import WelcomeScreen from './pages/WelcomeScreen'
-<<<<<<< HEAD
-=======
-import LandingPage from './pages/LandingPage'
->>>>>>> dev
-import Login from './pages/Login'
-import CreateAccount from './pages/CreateAccount'
-import HomeDashboard from './pages/HomeDashboard'
-import FileComplaint from './pages/FileComplaint'
-import MyComplaintsList from './pages/MyComplaintsList'
-import AIAnalysisResult from './pages/AIAnalysisResult'
-import ChatSupport from './pages/ChatSupport'
-import FeedbackRating from './pages/FeedbackRating'
-import Profile from './pages/Profile'
-import TrackComplaint from './pages/TrackComplaint'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
+import { DashboardLayout } from './components/layout'
 
-<<<<<<< HEAD
-function AppShell() {
-  return (
-    <>
-      <SideNav />
-      <div className="lg:ml-[240px]">
-        <Outlet />
-      </div>
-    </>
-=======
-import { useState } from 'react'
+// Public pages
+import LandingPage from './pages/public/LandingPage'
+import TrackComplaint from './pages/public/TrackComplaint'
 
-function AppShell() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
+// Auth pages
+import { Login, CreateAccount } from './pages/auth'
 
-  return (
-    <div className="relative min-h-screen bg-background-light dark:bg-background-dark">
-      <SideNav isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <div className="lg:ml-[240px]">
-        <Outlet context={{ toggleSidebar }} />
-      </div>
-    </div>
->>>>>>> dev
-  )
-}
+// Dashboard pages
+import {
+  HomeDashboard,
+  FileComplaint,
+  MyComplaintsList,
+  AIAnalysisResult,
+  ChatSupport,
+  FeedbackRating,
+  Profile,
+} from './pages/dashboard'
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-<<<<<<< HEAD
-        <Route path="/" element={<WelcomeScreen />} />
-=======
-        <Route path="/" element={<LandingPage />} />
->>>>>>> dev
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<CreateAccount />} />
-        <Route path="/track" element={<TrackComplaint />} />
-        <Route element={<AppShell />}>
-          <Route path="/home" element={<HomeDashboard />} />
-          <Route path="/file-complaint" element={<FileComplaint />} />
-          <Route path="/complaints" element={<MyComplaintsList />} />
-          <Route path="/ai-analysis" element={<AIAnalysisResult />} />
-          <Route path="/chat" element={<ChatSupport />} />
-          <Route path="/feedback" element={<FeedbackRating />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<CreateAccount />} />
+          <Route path="/track" element={<TrackComplaint />} />
+
+          {/* Dashboard routes (with shared layout) */}
+          <Route element={<DashboardLayout />}>
+            <Route path="/home" element={<HomeDashboard />} />
+            <Route path="/file-complaint" element={<FileComplaint />} />
+            <Route path="/complaints" element={<MyComplaintsList />} />
+            <Route path="/ai-analysis" element={<AIAnalysisResult />} />
+            <Route path="/chat" element={<ChatSupport />} />
+            <Route path="/feedback" element={<FeedbackRating />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+
+          {/* Catch-all redirect */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
