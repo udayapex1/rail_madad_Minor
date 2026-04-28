@@ -20,7 +20,7 @@ File complaints · Track status · AI analysis · Secure auth
 
 ## 🚀 What is Rail Madad?
 
-Rail Madad is a mobile-first grievance platform designed for Indian Railways passengers. It lets users submit complaints, attach evidence, track status, and receive intelligent categorization via AI. The application also includes secure authentication and a chat-based support interface.
+Rail Madad is a Mobile-first grievance platform designed for Indian Railways passengers. It lets users submit complaints, attach evidence, track status, and receive intelligent categorization via AI. The application also includes secure authentication and a chat-based support interface.
 
 ---
 
