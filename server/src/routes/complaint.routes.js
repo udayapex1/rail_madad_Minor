@@ -1,7 +1,7 @@
 // src/routes/complaint.routes.js
 
 import express                                        from "express";
-import { submitComplaint, getMyComplaints, getComplaintById } from "../controllers/complaint.controller.js";
+import { submitComplaint, getMyComplaints, getComplaintById, getDepartmentComplaints, updateComplaintStatus } from "../controllers/complaint.controller.js";
 // import { verifyToken }                                from "../middlewares/auth.middleware.js";
 import  {isAuthenticated} from "../middleware/authUser.middleware.js";
 // import { authorizeRole }                              from "../middlewares/role.middleware.js";
@@ -16,6 +16,18 @@ router.get(
   isAuthenticated,
 //   authorizeRole("passenger"),
   getMyComplaints
+);
+
+router.get(
+  "/department-complaints",
+  isAuthenticated,
+  getDepartmentComplaints
+);
+
+router.patch(
+  "/:complaintId/status",
+  isAuthenticated,
+  updateComplaintStatus
 );
 
 router.get(

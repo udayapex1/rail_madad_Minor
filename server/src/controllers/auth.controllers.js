@@ -85,8 +85,10 @@ export const loginUser = async (req, res) => {
 
     const token = await createToken(user._id, res);
 
+    const { password: _removed, ...safeUser } = user.toObject();
+
     return successResponse(res, {
-      user,
+      user: safeUser,
       token,
       message: "User logged in successfully",
     });
@@ -113,7 +115,7 @@ export const logoutUser = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.user.userId).select("-password");
     if (!user) {
       return errorResponse(res, "User not found", 404);
     }

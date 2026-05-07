@@ -4,16 +4,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const VALID_CATEGORIES = ["Cleanliness", "Damage", "Staff Behaviour", "Security", "Facilities", "Other"];
-const VALID_URGENCIES  = ["Low", "Medium", "High"];
+const VALID_URGENCIES = ["Low", "Medium", "High"];
 
 export const categorizeComplaint = async (imageUrl, extractedText = "") => {
   try {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization":      `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "X-OpenRouter-Title": "Rail Madad",
-        "Content-Type":       "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "qwen/qwen3-vl-235b-a22b-thinking",
@@ -23,57 +23,69 @@ export const categorizeComplaint = async (imageUrl, extractedText = "") => {
             content: [
               {
                 type: "text",
-                text: `
-                  You are an AI for Indian Railways complaint management system.
-                  Analyze this image and return category + urgency both.
-                  ${extractedText ? `Extra context: ${extractedText}` : ""}
+                text: `You are an expert AI system for the Indian Railways grievance management platform.
+Your task is to analyze the provided image (and optional text) and categorize the passenger complaint accurately.
+${extractedText ? `Additional passenger context: "${extractedText}"` : ""}
 
-                  Categories:
-                  - Cleanliness     → dirty coach, garbage, foul smell, unclean toilets
-                  - Damage          → broken seat, window, door, light, minor property damage
-                  - Staff Behaviour → rude staff, TTE misconduct, misbehaviour
-                  - Security        → fire, fight, harassment, SOS, overcrowding,
-                                      derailment, accident, collision, explosion, theft
-                  - Facilities      → no water, AC not working, no bedroll, no electricity
-                  - Other           → anything that does not fit above
+CATEGORIES:
+- Cleanliness: Dirty coach, platforms, foul smell, garbage, pests, unclean toilets.
+- Damage: Broken seats, windows, doors, lights, fans, minor property damage.
+- Staff Behaviour: Rude staff, TTE misconduct, bribery, unhelpful personnel.
+- Security: Fire, harassment, fights, theft, unauthorized persons, overcrowding, derailment, collision.
+- Facilities: No water, AC malfunctioning, no bedroll, power outage, non-functional charging ports.
+- Other: Anything that strictly does not fit the above categories.
 
-                  Urgency rules:
-                  - High   → Security, accident, fire, injury, life threat
-                  - Medium → Damage, Facilities, Staff Behaviour
-                  - Low    → Cleanliness, minor issues
+URGENCY RULES:
+- High: Immediate threat to life, safety, or severe operational disruption (Security, major accidents, fire).
+- Medium: Discomfort or service failure but not life-threatening (Facilities, Staff Behaviour, Damage).
+- Low: Minor inconveniences (Cleanliness, minor aesthetic damage).
 
-                  Priority rules:
-                  1. Accident, derailment, collision → ALWAYS "Security" + "High"
-                  2. Danger to human life            → ALWAYS "Security" + "High"
-                  3. "Damage" = only minor property damage
+CRITICAL PRIORITIES:
+1. Derailments, collisions, or danger to human life MUST be "Security" + "High".
+2. If multiple issues are present, categorize based on the MOST severe/urgent issue.
 
-                  Reply in this EXACT format only, no extra text:
-                  {"category":"Cleanliness","urgency":"Low","confidence":0.92,"description":"Garbage on coach floor"}
-                `,
+OUTPUT FORMAT:
+Respond ONLY with a valid, minified JSON object. Do not include markdown code blocks, explanation, or any other text.
+{"category":"Cleanliness","urgency":"Low","confidence":0.95,"description":"Short, 1-sentence summary of the issue."}`,
               },
-              {
-                type: "image_url",
-                image_url: { url: imageUrl },
-              },
+              ...(imageUrl ? [
+                {
+                  type: "image_url",
+                  image_url: { url: imageUrl },
+                }
+              ] : []),
             ],
           },
         ],
+        max_tokens: 500,
       }),
     });
 
-    const data    = await response.json();
-    const raw     = data.choices[0].message.content;
+    const data = await response.json();
+    console.log({
+      model: data.model,
+      usage: data.usage,
+      content: data?.choices?.[0]?.message?.content,
+    });
+
+    if (!data.choices || data.choices.length === 0) {
+      throw new Error(
+        `OpenRouter Error: ${data.error?.message || JSON.stringify(data)}`
+      );
+    }
+
+    const raw = data.choices[0].message.content;
     const cleaned = raw.replace(/```json|```/g, "").trim();
-    const parsed  = JSON.parse(cleaned);
+    const parsed = JSON.parse(cleaned);
 
     // hard enforce both fields
     const category = VALID_CATEGORIES.includes(parsed.category) ? parsed.category : "Other";
-    const urgency  = VALID_URGENCIES.includes(parsed.urgency)   ? parsed.urgency  : "Low";
+    const urgency = VALID_URGENCIES.includes(parsed.urgency) ? parsed.urgency : "Low";
 
     return {
       category,
       urgency,
-      confidence:  parsed.confidence  || 0.5,
+      confidence: parsed.confidence || 0.5,
       description: parsed.description || "",
     };
 
@@ -82,9 +94,9 @@ export const categorizeComplaint = async (imageUrl, extractedText = "") => {
 
     // rule based fallback
     return {
-      category:    "Other",
-      urgency:     "Low",
-      confidence:  0,
+      category: "Other",
+      urgency: "Low",
+      confidence: 0,
       description: "AI categorization failed — manual review needed",
     };
   }

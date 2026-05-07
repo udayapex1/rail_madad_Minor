@@ -11,11 +11,13 @@ import os from "os";
 
 dotenv.config();
 
-console.log("ENV CHECK →", {
-  openrouter: process.env.OPENROUTER_API_KEY ? "loaded" : "MISSING",
-  // mongo:      process.env.MONGO_URI          ? "loaded" : "MISSING",
-  cloudinary: process.env.CLOUDINARY_API_KEY ? "loaded" : "MISSING",
-});
+if (process.env.NODE_ENV !== "production") {
+  console.log("ENV CHECK →", {
+    openrouter: process.env.OPENROUTER_API_KEY ? "loaded" : "MISSING",
+    // mongo:      process.env.MONGO_URI          ? "loaded" : "MISSING",
+    cloudinary: process.env.CLOUDINARY_API_KEY ? "loaded" : "MISSING",
+  });
+}
 
 const app = express();
 
@@ -30,9 +32,11 @@ const getReadableUptime = () => {
 };
 
 const allowedOrigins = [
-  "http://localhost:5173", "http://localhost:5174",
-  "http://localhost:3000", "http://localhost:8000",
-];
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://rail-madad-green.vercel.app",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -64,7 +68,7 @@ app.use("/api/complaints", complaintRoutes);
 app.get("/health", async (req, res) => {
   const start = Date.now();
   const dbState = mongoose.connection.readyState;
-  
+
   // Mapping mongoose states to human words/emojis
   const dbStatusMap = {
     0: "Disconnected ❌",
@@ -113,5 +117,5 @@ app.get("/health", async (req, res) => {
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
-  console.log(`🚀 Engine started on port ${port}`);
+  console.log(`🚀 Engine started on http://localhost:${port}`);
 });
