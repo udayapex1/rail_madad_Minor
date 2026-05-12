@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '../../components/layout'
 import { InputField } from '../../components/common'
+import { useAuth } from '../../context/AuthContext'
 import Icon from '../../components/common/Icon'
 
 const LOGIN_FEATURES = [
@@ -12,7 +13,25 @@ const LOGIN_FEATURES = [
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
+  const [formData, setFormData] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    
+    const result = await login(formData)
+    if (result.success) {
+      navigate('/home')
+    } else {
+      setError(result.message || 'Invalid credentials')
+    }
+    setLoading(false)
+  }
 
   return (
     <AuthLayout
@@ -21,22 +40,26 @@ export default function Login() {
       subtitle="Sign in to Rail Madad and manage your complaints easily."
       features={LOGIN_FEATURES}
     >
-      <form
-        className="space-y-5"
-        onSubmit={(e) => {
-          e.preventDefault()
-          navigate('/home')
-        }}
-      >
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="hidden lg:block mb-2">
           <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Sign in</h2>
           <p className="text-slate-500 text-sm mt-1">Enter your credentials to continue</p>
         </div>
 
+        {error && (
+          <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2">
+            <Icon name="error" fill size="text-lg" />
+            {error}
+          </div>
+        )}
+
         <InputField
           label="Email / Phone"
           icon="person"
           placeholder="Enter your email or phone"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          required
           inputProps={{ autoComplete: 'username' }}
         />
 
@@ -45,6 +68,9 @@ export default function Login() {
           icon="lock"
           type={showPassword ? 'text' : 'password'}
           placeholder="Enter your password"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          required
           inputProps={{ autoComplete: 'current-password' }}
           trailing={
             <button
