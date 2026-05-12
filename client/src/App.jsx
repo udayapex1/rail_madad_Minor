@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import SideNav from './components/SideNav'
-import WelcomeScreen from './pages/WelcomeScreen'
-import LandingPage from './pages/LandingPage'
-import Login from './pages/Login'
-import CreateAccount from './pages/CreateAccount'
+import { useAuth } from './context/AuthContext'
+import LandingPage from './pages/public/LandingPage/LandingPage'
+import Login from './pages/auth/Login'
+import CreateAccount from './pages/auth/CreateAccount'
 import HomeDashboard from './pages/HomeDashboard'
-import FileComplaint from './pages/FileComplaint'
+import FileComplaint from './pages/dashboard/FileComplaint'
 import MyComplaintsList from './pages/MyComplaintsList'
 import AIAnalysisResult from './pages/AIAnalysisResult'
 import ChatSupport from './pages/ChatSupport'
@@ -14,6 +14,12 @@ import Profile from './pages/Profile'
 import TrackComplaint from './pages/TrackComplaint'
 
 import { useState } from 'react'
+
+const PrivateRoute = ({ children }) => {
+  const { user, loading } = useAuth()
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  return user ? children : <Navigate to="/login" />
+}
 
 function AppShell() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -37,7 +43,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<CreateAccount />} />
         <Route path="/track" element={<TrackComplaint />} />
-        <Route element={<AppShell />}>
+        <Route element={<PrivateRoute><AppShell /></PrivateRoute>}>
           <Route path="/home" element={<HomeDashboard />} />
           <Route path="/file-complaint" element={<FileComplaint />} />
           <Route path="/complaints" element={<MyComplaintsList />} />
