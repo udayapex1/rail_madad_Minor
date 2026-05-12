@@ -18,18 +18,30 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex gap-10 items-center">
-            <div className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
-              <Icon name="train" size="text-3xl" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">Railways</span>
+          <div className="flex gap-8 items-center">
+            <div className="flex flex-col items-center gap-2 opacity-80 hover:opacity-100 transition-opacity cursor-pointer group">
+              <img
+                src="/railways_logo.png"
+                alt="Indian Railways"
+                className="h-10 w-auto transition-all duration-300 group-hover:scale-110"
+              />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-white transition-colors">Railways</span>
             </div>
-            <div className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
-              <Icon name="cloud_done" size="text-3xl" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">Digital India</span>
+            <div className="flex flex-col items-center gap-2 opacity-80 hover:opacity-100 transition-opacity cursor-pointer group">
+              <img
+                src="/digital_india_logo.png"
+                alt="Digital India"
+                className="h-10 w-auto transition-all duration-300 group-hover:scale-110"
+              />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-white transition-colors">Digital India</span>
             </div>
-            <div className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
-              <Icon name="cleaning_services" size="text-3xl" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">Swachh Bharat</span>
+            <div className="flex flex-col items-center gap-2 opacity-80 hover:opacity-100 transition-opacity cursor-pointer group">
+              <img
+                src="/swachh_bharat_logo.png"
+                alt="Swachh Bharat"
+                className="h-10 w-auto transition-all duration-300 group-hover:scale-110"
+              />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-white transition-colors">Swachh Bharat</span>
             </div>
           </div>
         </div>

@@ -12,7 +12,7 @@ export default function HeroSection() {
 
       <div className="max-w-7xl mx-auto px-6 text-center lg:text-left grid lg:grid-cols-2 gap-12 items-center">
         <div className="animate-fade-in">
-          <div className="flex items-center gap-2 mb-6">
+          <div className="hidden sm:flex items-center gap-2 mb-6">
             <div className="h-[1px] w-8 bg-primary/40" />
             <span className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em]">Official Grievance Portal</span>
           </div>
