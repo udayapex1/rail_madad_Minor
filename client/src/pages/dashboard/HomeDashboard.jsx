@@ -1,12 +1,32 @@
+import { useState, useEffect } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import BottomNav from '../components/BottomNav'
-import { Icon } from '../components/common'
+// import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/AuthContext.jsx'
+import BottomNav from '../../components/navigation/BottomNav.jsx'
+import Icon from '../../components/common/Icon.jsx'
+import api from '../../services/api.js'
 
 export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { toggleSidebar } = useOutletContext()
+  const [profileData, setProfileData] = useState(null)
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get('/auth/profile')
+        if (res.success && res.user) {
+          setProfileData(res.user)
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error)
+      }
+    }
+    fetchProfile()
+  }, [])
+
+  const displayUser = profileData || user
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
@@ -35,7 +55,7 @@ export default function HomeDashboard() {
             <div className="relative z-10 flex items-start justify-between mb-5">
               <div>
                 <p className="text-blue-200 text-sm font-medium">Good morning</p>
-                <h3 className="text-white text-2xl font-black tracking-tight">Hello, {user?.name || 'Traveler'} 👋</h3>
+                <h3 className="text-white text-2xl font-black tracking-tight">Hello, {displayUser?.firstName || displayUser?.name || 'Traveler'} 👋</h3>
                 <p className="text-blue-200/80 text-xs mt-0.5">How can we assist you today?</p>
               </div>
               <div className="size-14 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center">

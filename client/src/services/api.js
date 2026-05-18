@@ -3,7 +3,7 @@
  * Swap BASE_URL for production when deploying.
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+const BASE_URL = 'https://rail-madad-minor.onrender.com/api'
 
 /**
  * Core request function with auth header injection.

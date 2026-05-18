@@ -4,7 +4,7 @@ import { AuthLayout } from '../../components/layout'
 import { InputField, Icon } from '../../components/common'
 import { StatusBadge } from '../../components/common'
 import { Timeline } from '../../components/feedback'
-import { MOCK_COMPLAINTS } from '../../constants/mockData'
+import api from '../../services/api'
 
 const TRACK_FEATURES = [
   { icon: 'timeline',             text: 'Step-by-step resolution timeline' },
@@ -20,19 +20,99 @@ export default function TrackComplaint() {
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
 
-  function handleTrack(e) {
+  const getIconData = (category) => {
+    switch (category) {
+      case 'Security':
+        return { icon: 'security', iconBg: 'bg-blue-100 dark:bg-blue-900/30', iconColor: 'text-blue-600' }
+      case 'Cleanliness':
+        return { icon: 'cleaning_services', iconBg: 'bg-amber-100 dark:bg-amber-900/30', iconColor: 'text-amber-600' }
+      default:
+        return { icon: 'assignment', iconBg: 'bg-slate-100 dark:bg-slate-800', iconColor: 'text-slate-600' }
+    }
+  }
+
+  const getPriorityColor = (urgency) => {
+    switch (urgency) {
+      case 'High': return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+      case 'Medium': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400'
+      default: return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+    }
+  }
+
+  const getStatusColors = (status) => {
+    switch (status) {
+      case 'Pending': return { bg: 'bg-amber-100 dark:bg-amber-900/30', color: 'text-amber-700 dark:text-amber-400' }
+      case 'Resolved': return { bg: 'bg-green-100 dark:bg-green-900/30', color: 'text-green-700 dark:text-green-400' }
+      default: return { bg: 'bg-blue-100 dark:bg-blue-900/30', color: 'text-blue-700 dark:text-blue-400' }
+    }
+  }
+
+  const getProgress = (status) => {
+    if (status === 'Pending') return 25
+    if (status === 'In Progress') return 50
+    if (status === 'Resolved') return 100
+    return 10
+  }
+
+  async function handleTrack(e) {
     e.preventDefault()
     const id = input.trim().toUpperCase()
     if (!id) { setError('Please enter a complaint ID'); return }
     setError(''); setLoading(true); setResult(null); setSearched(false)
 
-    setTimeout(() => {
-      setLoading(false); setSearched(true)
-      const found = MOCK_COMPLAINTS[id]
-      if (found) setResult(found)
-      else if (id.startsWith('RM-')) setError('No complaint found with this ID. Please check and try again.')
-      else setError('Invalid complaint ID format. IDs look like RM-2025-48291.')
-    }, 1000)
+    try {
+      const res = await api.get(`/complaints/${id}`)
+      // console.log(res)
+      if (res.success && res.data) {
+        const c = res.data
+        const statusColors = getStatusColors(c.status)
+        const iconData = getIconData(c.category)
+        
+        const formattedResult = {
+          id: c.complaintId,
+          status: c.status,
+          statusBg: statusColors.bg,
+          statusColor: statusColors.color,
+          icon: iconData.icon,
+          iconBg: iconData.iconBg,
+          iconColor: iconData.iconColor,
+          title: c.aiMetadata?.description || c.rawText || c.category,
+          coach: c.pnrNumber ? 'PNR: ' + c.pnrNumber : 'General',
+          train: c.department?.name || 'Department Pending',
+          filedDate: new Date(c.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+          priority: c.urgency ? c.urgency.toUpperCase() : 'LOW',
+          priorityColor: getPriorityColor(c.urgency),
+          assignedTo: c.department?.name || 'Pending Assignment',
+          progress: getProgress(c.status),
+          lastUpdated: new Date(c.updatedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          image: c.mediaFiles && c.mediaFiles.length > 0 ? c.mediaFiles[0].url : null,
+          timeline: c.timeline?.map((t, idx) => ({
+            label: t.status,
+            time: new Date(t.updatedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            note: t.note,
+            done: idx < c.timeline.length - 1,
+            active: idx === c.timeline.length - 1
+          })) || []
+        }
+        
+        setResult(formattedResult)
+      } else {
+        if (id.startsWith('RM-')) setError('No complaint found with this ID. Please check and try again.')
+        else setError('Invalid complaint ID format. IDs look like RM-2025-48291.')
+      }
+    } catch (err) {
+      console.error(err)
+      const msg = err.message?.toLowerCase() || ''
+      // If it's a 404 or "not found" or similar validation error, let the bottom UI handle it beautifully
+      if (msg.includes('404') || msg.includes('not found') || msg.includes('invalid') || msg.includes('cast')) {
+         // Do not set error state. `searched` will trigger the empty state.
+      } else {
+         setError(err.message || 'An error occurred while tracking the complaint.')
+      }
+    } finally {
+      setLoading(false)
+      setSearched(true)
+    }
   }
 
   return (
@@ -130,7 +210,7 @@ export default function TrackComplaint() {
                   <Icon name={result.icon} fill size="text-2xl" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate">{result.title}</p>
+                  <p className="text-sm font-bold truncate line-clamp-1">{result.title}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{result.coach} · {result.train}</p>
                   <p className="text-xs text-slate-400 mt-0.5">Filed: {result.filedDate}</p>
                 </div>
@@ -142,6 +222,13 @@ export default function TrackComplaint() {
                 <Icon name="support_agent" fill className="text-primary shrink-0" size="text-[18px]" />
                 <span className="text-xs">Assigned to <span className="font-bold">{result.assignedTo}</span></span>
               </div>
+
+              {/* Image Attachment */}
+              {result.image && (
+                <div className="rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700/50">
+                  <img src={result.image} alt="Complaint attachment" className="w-full h-48 object-cover hover:scale-105 transition-transform duration-500" />
+                </div>
+              )}
 
               {/* Progress */}
               <div className="space-y-1.5">
@@ -192,7 +279,7 @@ export default function TrackComplaint() {
       {searched && !result && !error && (
         <div className="mt-5 flex flex-col items-center gap-3 p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 animate-fade-in">
           <Icon name="search_off" className="text-slate-300 dark:text-slate-600" size="text-5xl" />
-          <p className="text-slate-500 text-sm font-medium text-center">No complaint found with this ID.</p>
+          <p className="text-slate-500 text-sm font-medium text-center">Invalid complaint ID or complaint does not exist.</p>
         </div>
       )}
 

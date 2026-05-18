@@ -1,10 +1,59 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GradientPanel } from '../../components/layout'
 import Icon from '../../components/common/Icon'
 import { PROFILE_STATS, PROFILE_MENU_SECTIONS } from '../../constants/mockData'
+import { useAuth } from '../../context/AuthContext.jsx'
+import api from '../../services/api.js'
 
 export default function Profile() {
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
+  const [profileData, setProfileData] = useState(null)
+
+  const [stats, setStats] = useState({ total: 0, resolved: 0, pending: 0 })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [profileRes, complaintsRes] = await Promise.all([
+          api.get('/auth/profile').catch(() => null),
+          api.get('/complaints/my-complaints').catch(() => null)
+        ])
+        
+        if (profileRes?.success && profileRes?.user) {
+          setProfileData(profileRes.user)
+        }
+        
+        if (complaintsRes?.success && complaintsRes?.data) {
+          const complaints = complaintsRes.data
+          const resolvedCount = complaints.filter(c => c.status === 'Resolved').length
+          const pendingCount = complaints.filter(c => c.status === 'Pending' || c.status === 'In Progress').length
+          setStats({
+            total: complaints.length,
+            resolved: resolvedCount,
+            pending: pendingCount
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error)
+      }
+    }
+    fetchData()
+  }, [])
+
+  const displayUser = profileData || user
+
+  const profileStats = [
+    { label: 'Total Filed', value: stats.total, icon: 'assignment' },
+    { label: 'Resolved', value: stats.resolved, icon: 'check_circle' },
+    { label: 'Pending', value: stats.pending, icon: 'schedule' },
+  ]
+
+  const handleSignOut = () => {
+    logout()
+    navigate('/')
+  }
 
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen">
@@ -39,17 +88,17 @@ export default function Profile() {
 
           {/* Name + email */}
           <div className="text-center lg:text-left flex-1">
-            <h1 className="text-white text-xl font-extrabold tracking-tight">Ramesh Kumar</h1>
-            <p className="text-white/70 text-sm mt-0.5">ramesh.kumar@example.com</p>
+            <h1 className="text-white text-xl font-extrabold tracking-tight">{displayUser?.firstName ? `${displayUser.firstName} ${displayUser.lastName || ''}` : displayUser?.name || 'Traveler'}</h1>
+            <p className="text-white/70 text-sm mt-0.5">{displayUser?.email || 'No email provided'}</p>
             <div className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-white/15 border border-white/20">
-              <Icon name="train" className="text-white/80" size="text-sm" />
-              <span className="text-white/90 text-xs font-bold">PNR: 4821039456</span>
+              <Icon name="phone" className="text-white/80" size="text-sm" />
+              <span className="text-white/90 text-xs font-bold">{displayUser?.phoneNumber || 'No phone provided'}</span>
             </div>
           </div>
 
           {/* Stats — desktop */}
           <div className="hidden lg:grid grid-cols-3 gap-4 shrink-0">
-            {PROFILE_STATS.map(({ label, value, icon }) => (
+            {profileStats.map(({ label, value, icon }) => (
               <div key={label} className="flex flex-col items-center gap-1.5 px-5 py-4 bg-white/10 border border-white/15 rounded-2xl">
                 <Icon name={icon} fill className="text-white/90" size="text-2xl" />
                 <p className="text-white text-2xl font-extrabold leading-none">{value}</p>
@@ -65,7 +114,7 @@ export default function Profile() {
         <div className="max-w-4xl mx-auto">
           {/* Stats — mobile */}
           <div className="lg:hidden grid grid-cols-3 gap-3 mb-8">
-            {PROFILE_STATS.map(({ label, value, icon }) => (
+            {profileStats.map(({ label, value, icon }) => (
               <div key={label} className="card flex flex-col items-center gap-1.5 py-4">
                 <Icon name={icon} fill className="text-primary" size="text-2xl" />
                 <p className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 leading-none">{value}</p>
@@ -99,7 +148,7 @@ export default function Profile() {
 
           {/* Sign out */}
           <button
-            onClick={() => navigate('/')}
+            onClick={handleSignOut}
             className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-red-100 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10 text-red-500 font-bold text-sm transition-all hover:bg-red-100 dark:hover:bg-red-900/20 active:scale-95"
           >
             <Icon name="logout" size="text-xl" />
