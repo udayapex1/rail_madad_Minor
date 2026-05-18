@@ -3,7 +3,7 @@
  * Swap BASE_URL for production when deploying.
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 
 /**
  * Core request function with auth header injection.
@@ -11,9 +11,11 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 async function request(endpoint, options = {}) {
     const token = localStorage.getItem('rm_token')
 
+    const isFormData = options.body instanceof FormData
+
     const config = {
         headers: {
-            'Content-Type': 'application/json',
+            ...(!isFormData && { 'Content-Type': 'application/json' }),
             ...(token && { Authorization: `Bearer ${token}` }),
             ...options.headers,
         },

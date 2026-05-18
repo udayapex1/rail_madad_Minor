@@ -19,12 +19,14 @@ export const submitComplaint = async (req, res) => {
     mongo: process.env.MONGO_URI ? "loaded" : "MISSING",
     cloudinary: process.env.CLOUDINARY_API_KEY ? "loaded" : "MISSING",
   });
+  
   try {
-    const { rawText } = req.body;
+    const { rawText, pnrNumber } = req.body;
     const files = req.files;
 
     console.log("\n--- [DEBUG] NEW COMPLAINT SUBMISSION ---");
     console.log("Raw Text:", rawText);
+    console.log("PNR Number:", pnrNumber);
     console.log("Files Attached:", files ? files.length : 0);
 
     // ── Validation ─────────────────────────────────────────────────────────
@@ -94,6 +96,7 @@ export const submitComplaint = async (req, res) => {
       mediaFiles,
       department: departmentId,
       rawText: rawText || "",
+      pnrNumber: pnrNumber || null,
       category,
       urgency,
       status: "Pending",
@@ -147,7 +150,7 @@ export const submitComplaint = async (req, res) => {
 
     return res.status(201).json(responsePayload);
   } catch (error) {
-    console.error("Complaint submission error:", error); // ← full error print karo
+    console.error("Complaint submission error:", error);
     return errorResponse(res, "Something went wrong", 500);
   }
 };

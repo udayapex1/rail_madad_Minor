@@ -1,3 +1,5 @@
+import Icon from '../../../components/common/Icon'
+
 export default function Footer() {
   return (
     <footer className="bg-slate-900 text-white py-12">
@@ -16,10 +18,31 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex gap-6">
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8d/Indian_Railways_logo.svg/1200px-Indian_Railways_logo.svg.png" className="h-10 opacity-70 grayscale hover:grayscale-0 transition-all cursor-pointer" alt="Indian Railways" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Digital_India_logo.svg" className="h-10 opacity-70 grayscale hover:grayscale-0 transition-all cursor-pointer" alt="Digital India" />
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d4/Swachh_Bharat_Abhiyan_logo.svg/1200px-Swachh_Bharat_Abhiyan_logo.svg.png" className="h-10 opacity-70 grayscale hover:grayscale-0 transition-all cursor-pointer" alt="Swachh Bharat" />
+          <div className="flex gap-8 items-center">
+            <div className="flex flex-col items-center gap-2 opacity-80 hover:opacity-100 transition-opacity cursor-pointer group">
+              <img
+                src="/railways_logo.png"
+                alt="Indian Railways"
+                className="h-10 w-auto transition-all duration-300 group-hover:scale-110"
+              />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-white transition-colors">Railways</span>
+            </div>
+            <div className="flex flex-col items-center gap-2 opacity-80 hover:opacity-100 transition-opacity cursor-pointer group">
+              <img
+                src="/digital_india_logo.png"
+                alt="Digital India"
+                className="h-10 w-auto transition-all duration-300 group-hover:scale-110"
+              />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-white transition-colors">Digital India</span>
+            </div>
+            <div className="flex flex-col items-center gap-2 opacity-80 hover:opacity-100 transition-opacity cursor-pointer group">
+              <img
+                src="/swachh_bharat_logo.png"
+                alt="Swachh Bharat"
+                className="h-10 w-auto transition-all duration-300 group-hover:scale-110"
+              />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-white transition-colors">Swachh Bharat</span>
+            </div>
           </div>
         </div>
 

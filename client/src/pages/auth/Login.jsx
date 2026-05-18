@@ -1,9 +1,9 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '../../components/layout'
 import { InputField } from '../../components/common'
+import { useAuth } from '../../context/AuthContext'
 import Icon from '../../components/common/Icon'
-import Captcha from '../../components/Captcha'
 
 const LOGIN_FEATURES = [
   { icon: 'shield',               text: 'Secure and encrypted login' },
@@ -13,12 +13,25 @@ const LOGIN_FEATURES = [
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
-  const [captchaVerified, setCaptchaVerified] = useState(false)
+  const [formData, setFormData] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleCaptchaVerified = useCallback((verified) => {
-    setCaptchaVerified(verified)
-  }, [])
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    
+    const result = await login(formData)
+    if (result.success) {
+      navigate('/home')
+    } else {
+      setError(result.message || 'Invalid credentials')
+    }
+    setLoading(false)
+  }
 
   return (
     <AuthLayout
@@ -27,16 +40,27 @@ export default function Login() {
       subtitle="Sign in to Rail Madad and manage your complaints easily."
       features={LOGIN_FEATURES}
     >
-      <div className="space-y-5">
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="hidden lg:block mb-2">
           <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Sign in</h2>
           <p className="text-slate-500 text-sm mt-1">Enter your credentials to continue</p>
         </div>
 
+        {error && (
+          <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2">
+            <Icon name="error" fill size="text-lg" />
+            {error}
+          </div>
+        )}
+
         <InputField
           label="Email / Phone"
           icon="person"
           placeholder="Enter your email or phone"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          required
+          inputProps={{ autoComplete: 'username' }}
         />
 
         <InputField
@@ -44,6 +68,10 @@ export default function Login() {
           icon="lock"
           type={showPassword ? 'text' : 'password'}
           placeholder="Enter your password"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          required
+          inputProps={{ autoComplete: 'current-password' }}
           trailing={
             <button
               type="button"
@@ -56,18 +84,13 @@ export default function Login() {
         />
 
         <div className="flex justify-end">
-          <button className="text-primary text-sm font-semibold hover:underline">Forgot Password?</button>
+          <button type="button" className="text-primary text-sm font-semibold hover:underline">Forgot Password?</button>
         </div>
-
-        <Captcha onVerified={handleCaptchaVerified} />
 
         <div className="flex flex-col gap-3 pt-2">
           <button
-            onClick={() => captchaVerified && navigate('/home')}
-            disabled={!captchaVerified}
-            className={`btn-primary h-14 text-base w-full flex items-center justify-center gap-2 transition-opacity duration-200 ${
-              captchaVerified ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'
-            }`}
+            type="submit"
+            className="btn-primary h-14 text-base w-full flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 shadow-glow"
           >
             <Icon name="login" fill size="text-xl" />
             Login
@@ -79,7 +102,11 @@ export default function Login() {
             <div className="flex-grow border-t border-slate-100 dark:border-slate-800" />
           </div>
 
-          <button onClick={() => navigate('/register')} className="btn-secondary h-14 text-base w-full flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate('/register')}
+            className="btn-secondary h-14 text-base w-full flex items-center justify-center gap-2"
+          >
             <Icon name="person_add" size="text-xl" />
             Create Account
           </button>
@@ -88,7 +115,7 @@ export default function Login() {
         <div className="mt-6 flex flex-col items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
           <p className="text-[10px] text-slate-400 uppercase tracking-widest text-center">Ministry of Railways · Government of India</p>
         </div>
-      </div>
+      </form>
     </AuthLayout>
   )
 }

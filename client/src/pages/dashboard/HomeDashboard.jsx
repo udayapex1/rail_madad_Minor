@@ -1,23 +1,30 @@
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { PageHeader } from '../../components/layout'
-import Icon from '../../components/common/Icon'
+import { useAuth } from '../context/AuthContext'
+import BottomNav from '../components/BottomNav'
+import { Icon } from '../components/common'
 
 export default function HomeDashboard() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { toggleSidebar } = useOutletContext()
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
-      <PageHeader
-        title="Rail Madad"
-        onMenuToggle={toggleSidebar}
-        trailing={
-          <button className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary relative">
-            <Icon name="notifications" size="text-[22px]" />
-            <span className="absolute top-1.5 right-1.5 size-2 bg-red-500 rounded-full" />
-          </button>
-        }
-      />
+      {/* Header */}
+      <header className="flex items-center px-4 py-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 sticky top-0 z-10">
+        <button
+          onClick={toggleSidebar}
+          className="flex lg:hidden size-10 items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+          <Icon name="menu" className="text-slate-700 dark:text-slate-300" size="text-[26px]" />
+        </button>
+        <div className="hidden lg:flex size-10" />
+        <h2 className="text-base font-black tracking-tight flex-1 text-center">Rail Madad</h2>
+        <button className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary relative">
+          <Icon name="notifications" size="text-[22px]" />
+          <span className="absolute top-1.5 right-1.5 size-2 bg-red-500 rounded-full" />
+        </button>
+      </header>
 
       <main className="flex-1 overflow-y-auto pb-28 lg:pb-8">
         {/* Welcome Banner */}
@@ -28,11 +35,11 @@ export default function HomeDashboard() {
             <div className="relative z-10 flex items-start justify-between mb-5">
               <div>
                 <p className="text-blue-200 text-sm font-medium">Good morning</p>
-                <h3 className="text-white text-2xl font-black tracking-tight">Hello, Traveler 👋</h3>
+                <h3 className="text-white text-2xl font-black tracking-tight">Hello, {user?.name || 'Traveler'} 👋</h3>
                 <p className="text-blue-200/80 text-xs mt-0.5">How can we assist you today?</p>
               </div>
               <div className="size-14 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center">
-                <Icon name="train" fill className="text-white" size="text-3xl" />
+                <Icon name="train" className="text-white" size="text-3xl" fill />
               </div>
             </div>
             <div className="relative z-10 grid grid-cols-3 gap-2">
@@ -54,10 +61,13 @@ export default function HomeDashboard() {
         <div className="px-4 mb-2">
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Quick Actions</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div onClick={() => navigate('/file-complaint')} className="card-interactive overflow-hidden animate-slide-up-1">
+            <div
+              onClick={() => navigate('/file-complaint')}
+              className="card p-0 overflow-hidden hover:shadow-card-hover active:scale-[0.98] transition-all duration-200 cursor-pointer animate-slide-up-1"
+            >
               <div className="p-5 flex items-center gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#1500cc] text-white shadow-glow">
-                  <Icon name="add_a_photo" fill size="text-3xl" />
+                  <Icon name="add_a_photo" size="text-3xl" fill />
                 </div>
                 <div className="flex-1">
                   <h4 className="text-base font-black">File a Complaint</h4>
@@ -67,22 +77,25 @@ export default function HomeDashboard() {
                   onClick={(e) => { e.stopPropagation(); navigate('/file-complaint') }}
                   className="btn-primary h-10 px-4 text-sm flex items-center gap-1 shrink-0"
                 >
-                  <Icon name="add" size="text-base" />
+                  <Icon name="add" className="text-white" size="text-base" />
                   New
                 </button>
               </div>
             </div>
 
-            <div onClick={() => navigate('/complaints')} className="card-interactive animate-slide-up-2">
+            <div
+              onClick={() => navigate('/complaints')}
+              className="card p-0 overflow-hidden hover:shadow-card-hover active:scale-[0.98] transition-all duration-200 cursor-pointer animate-slide-up-2"
+            >
               <div className="p-5 flex items-center gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-600">
-                  <Icon name="assignment" fill size="text-3xl" />
+                  <Icon name="assignment" size="text-3xl" fill />
                 </div>
                 <div className="flex-1">
                   <h4 className="text-base font-black">My Complaints</h4>
                   <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">View history and track progress</p>
                 </div>
-                <Icon name="chevron_right" className="text-slate-300 dark:text-slate-600" />
+                <Icon name="chevron_right" className="text-slate-300 dark:text-slate-600" size="text-2xl" />
               </div>
             </div>
           </div>
@@ -92,7 +105,10 @@ export default function HomeDashboard() {
         <div className="px-4 mt-4 animate-slide-up-3">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Recent Status</p>
-            <button onClick={() => navigate('/complaints')} className="text-primary font-bold text-xs flex items-center gap-1">
+            <button
+              onClick={() => navigate('/complaints')}
+              className="text-primary font-bold text-xs flex items-center gap-1"
+            >
               View All <Icon name="arrow_forward" size="text-sm" />
             </button>
           </div>
@@ -102,7 +118,9 @@ export default function HomeDashboard() {
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Complaint ID</p>
                 <p className="text-sm font-black text-primary">#RM-2025-48291</p>
               </div>
-              <span className="badge-active px-2.5 py-1 rounded-full text-[10px] font-bold">In Progress</span>
+              <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase">
+                In Progress
+              </span>
             </div>
             <div className="flex items-center gap-3 mb-4">
               <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">

@@ -32,7 +32,7 @@ export default function ContactSection() {
               </div>
             </div>
 
-            <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/60 dark:border-slate-700/50 shadow-glow-sm relative">
+            <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl p-8 rounded-[2rem] border border-white/60 dark:border-slate-700/50 shadow-glow-sm hover:shadow-glow transition-all duration-500 relative group">
               <div className="mb-6 relative z-10">
                 <h4 className="text-xl font-black mb-1">Send a Message</h4>
                 <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Professional support at your service</p>
@@ -41,12 +41,12 @@ export default function ContactSection() {
               <div className="space-y-5 relative z-10">
                 <div className="relative">
                   <Icon name="person" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size="text-lg" />
-                  <input type="text" placeholder="Your Name" className="input-field pl-12 h-14 bg-white/80 dark:bg-slate-800/50" />
+                  <input type="text" placeholder="Your Name" autoComplete="name" className="input-field pl-12 h-14 bg-white/80 dark:bg-slate-800/50" />
                 </div>
 
                 <div className="relative">
                   <Icon name="mail" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size="text-lg" />
-                  <input type="email" placeholder="Email Address" className="input-field pl-12 h-14 bg-white/80 dark:bg-slate-800/50" />
+                  <input type="email" placeholder="Email Address" autoComplete="email" className="input-field pl-12 h-14 bg-white/80 dark:bg-slate-800/50" />
                 </div>
 
                 <div className="relative">

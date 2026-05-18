@@ -15,6 +15,7 @@ import Icon from '../common/Icon'
  */
 export default function AuthLayout({
   icon,
+  logoImage,
   title,
   subtitle,
   features = [],
@@ -42,8 +43,12 @@ export default function AuthLayout({
 
         <div className="relative z-10 flex flex-col items-center text-center px-6 pt-14 pb-32 lg:pt-0 lg:pb-0 animate-bounce-in">
           {/* Hero icon */}
-          <div className="size-20 rounded-3xl bg-white/20 border-2 border-white/30 flex items-center justify-center mb-4 backdrop-blur-sm">
-            <Icon name={icon} fill className="text-white" size="text-4xl" />
+          <div className="size-20 rounded-3xl bg-white/20 border-2 border-white/30 flex items-center justify-center mb-4 backdrop-blur-sm overflow-hidden">
+            {logoImage ? (
+              <img src={logoImage} className="w-full h-full object-contain p-2" alt="Logo" />
+            ) : (
+              <Icon name={icon} fill className="text-white" size="text-4xl" />
+            )}
           </div>
           <h1 className="text-white text-3xl lg:text-4xl font-black tracking-tight">{title}</h1>
           <p className="text-blue-100/80 text-sm mt-2 max-w-xs">{subtitle}</p>

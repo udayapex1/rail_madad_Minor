@@ -1,54 +1,59 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { api } from '../services/api'
 
-export const AuthContext = createContext(null)
+const AuthContext = createContext()
 
-/**
- * Auth provider — manages user session state.
- * Uses localStorage for persistence.
- *
- * Provides: { user, token, isAuthenticated, login, logout }
- */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  // Hydrate from localStorage on mount
   useEffect(() => {
-    try {
-      const storedToken = localStorage.getItem('rm_token')
-      const storedUser = localStorage.getItem('rm_user')
-      if (storedToken && storedUser) {
-        setToken(storedToken)
-        setUser(JSON.parse(storedUser))
-      }
-    } catch {
-      // Corrupted data — clear it
-      localStorage.removeItem('rm_token')
-      localStorage.removeItem('rm_user')
+    // Try to load user from localStorage on mount
+    const token = localStorage.getItem('rm_token')
+    const storedUser = localStorage.getItem('rm_user')
+    
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser))
     }
+    setLoading(false)
   }, [])
 
-  const login = (userData, authToken) => {
-    setUser(userData)
-    setToken(authToken)
-    localStorage.setItem('rm_token', authToken)
-    localStorage.setItem('rm_user', JSON.stringify(userData))
+  const login = async (credentials) => {
+    try {
+      const response = await api.post('/auth/login', credentials)
+      if (response.token) {
+        localStorage.setItem('rm_token', response.token)
+        localStorage.setItem('rm_user', JSON.stringify(response.user))
+        setUser(response.user)
+        return { success: true }
+      }
+    } catch (error) {
+      return { success: false, message: error.message }
+    }
+  }
+
+  const register = async (userData) => {
+    try {
+      const response = await api.post('/auth/register', userData)
+      if (response.success) {
+        return { success: true }
+      }
+    } catch (error) {
+      return { success: false, message: error.message }
+    }
   }
 
   const logout = () => {
-    setUser(null)
-    setToken(null)
     localStorage.removeItem('rm_token')
     localStorage.removeItem('rm_user')
+    setUser(null)
   }
 
-  const value = {
-    user,
-    token,
-    isAuthenticated: !!token,
-    login,
-    logout,
-  }
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
+
+export const useAuth = () => useContext(AuthContext)

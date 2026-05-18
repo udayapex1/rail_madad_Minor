@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { PageHeader } from '../../components/layout'
 import { StepIndicator, InfoBanner, Icon } from '../../components/common'
 import { COMPLAINT_METHODS } from '../../constants/mockData'
+import { api } from '../../services/api'
 
 export default function FileComplaint() {
   const navigate = useNavigate()
@@ -10,9 +11,12 @@ export default function FileComplaint() {
 
   const [step, setStep] = useState(1)
   const [chosen, setChosen] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null)
   const [fileName, setFileName] = useState(null)
   const [pnr, setPnr] = useState('')
   const [desc, setDesc] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   function handleMethodSelect(method) {
     setChosen(method)
@@ -22,6 +26,7 @@ export default function FileComplaint() {
       else fileInputRef.current.removeAttribute('capture')
       fileInputRef.current.click()
     } else {
+      setSelectedFile(null)
       setFileName(null)
       setStep(2)
     }
@@ -29,14 +34,44 @@ export default function FileComplaint() {
 
   function handleFileChange(e) {
     const file = e.target.files?.[0]
-    if (file) setFileName(file.name)
+    if (file) {
+      setSelectedFile(file)
+      setFileName(file.name)
+      setStep(2)
+    }
     e.target.value = ''
-    setStep(2)
   }
 
-  function handleSubmit() {
-    if (!pnr.trim()) return
-    navigate('/ai-analysis')
+  async function handleSubmit() {
+    if (!pnr.trim()) {
+      setError('PNR is required')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const formData = new FormData()
+      formData.append('pnrNumber', pnr)
+      formData.append('rawText', desc || (selectedFile ? `Filing with ${selectedFile.type}` : ''))
+      
+      if (selectedFile) {
+        formData.append('files', selectedFile)
+      }
+
+      const response = await api.upload('/complaint/submit', formData)
+      
+      if (response.success) {
+        // Redirect to a success page or the dashboard with a success message
+        navigate('/complaints', { state: { message: 'Complaint filed successfully!' } })
+      }
+    } catch (err) {
+      console.error('Upload failed:', err)
+      setError(err.message || 'Failed to submit complaint. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   // ── Step 1 ──
@@ -88,7 +123,7 @@ export default function FileComplaint() {
         title="Rail Madad"
         subtitle="Grievance Redressal"
         showBack
-        onMenuToggle={null}
+
       />
 
       <main className="flex-1 px-4 pt-6 pb-36 lg:pb-8 max-w-3xl mx-auto w-full">
@@ -99,8 +134,15 @@ export default function FileComplaint() {
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Step 2 — Add your PNR &amp; a brief description.</p>
         </div>
 
+        {error && (
+          <div className="mb-5 p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2">
+            <Icon name="error" fill size="text-lg" />
+            {error}
+          </div>
+        )}
+
         {/* Attachment confirmation */}
-        {chosen && (
+        {chosen && selectedFile && (
           <div className={`mb-5 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-br ${chosen.color} text-white shadow-glow animate-scale-in`}>
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
               <Icon name={chosen.icon} fill size="text-xl" />
@@ -110,6 +152,12 @@ export default function FileComplaint() {
               <p className="text-white/75 text-xs truncate">{fileName || 'Ready to submit'}</p>
             </div>
             <Icon name="check_circle" fill className="text-white/80" />
+            <button 
+              onClick={() => { setSelectedFile(null); setFileName(null); setStep(1); }}
+              className="size-8 flex items-center justify-center rounded-lg bg-black/10 hover:bg-black/20"
+            >
+              <Icon name="close" size="text-sm" />
+            </button>
           </div>
         )}
 
@@ -152,11 +200,20 @@ export default function FileComplaint() {
         <div className="max-w-3xl mx-auto">
           <button
             onClick={handleSubmit}
-            disabled={!pnr.trim() || pnr.length < 10}
+            disabled={loading || !pnr.trim() || pnr.length < 10}
             className="btn-primary w-full h-[56px] text-base flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
           >
-            <Icon name="send" fill size="text-xl" />
-            Submit Complaint
+            {loading ? (
+              <>
+                <span className="size-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              <>
+                <Icon name="send" fill size="text-xl" />
+                Submit Complaint
+              </>
+            )}
           </button>
         </div>
       </div>
